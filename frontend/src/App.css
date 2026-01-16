@@ -1,0 +1,177 @@
+/* Global Dark Theme Overrides for Ant Design */
+.App {
+  min-height: 100vh;
+  background-color: #0b0e14;
+  color: #ffffff;
+}
+
+/* Table Styles - Transparent & Clean */
+.ant-table-wrapper .ant-table {
+  background: transparent !important;
+  color: #dfe5ee !important;
+}
+
+.ant-table-wrapper .ant-table-thead>tr>th {
+  background: #11161d !important;
+  color: #586372 !important;
+  border-bottom: 1px solid #1c222b !important;
+  font-weight: 800 !important;
+  /* Bold Header */
+  text-transform: uppercase;
+  font-size: 13px !important;
+  padding: 16px !important;
+}
+
+.ant-table-wrapper .ant-table-tbody>tr>td {
+  background: transparent !important;
+  color: #dfe5ee !important;
+  border-bottom: 1px solid #1c222b !important;
+  transition: background 0.2s ease;
+  padding: 16px !important;
+}
+
+.ant-table-wrapper .ant-table-tbody>tr:hover>td {
+  background: #161b24 !important;
+}
+
+/* Pagination - Dark Mode Harmony */
+.ant-pagination {
+  margin-top: 24px !important;
+}
+
+.ant-pagination .ant-pagination-item {
+  background: transparent !important;
+  border-color: #232730 !important;
+}
+
+.ant-pagination .ant-pagination-item a {
+  color: #8a93a0 !important;
+}
+
+.ant-pagination .ant-pagination-item-active {
+  background: #232730 !important;
+  border-color: #33dba8 !important;
+}
+
+.ant-pagination .ant-pagination-item-active a {
+  color: #33dba8 !important;
+}
+
+.ant-pagination .ant-pagination-prev .ant-pagination-item-link,
+.ant-pagination .ant-pagination-next .ant-pagination-item-link {
+  background: transparent !important;
+  border-color: #232730 !important;
+  color: #8a93a0 !important;
+}
+
+.ant-pagination .ant-pagination-disabled .ant-pagination-item-link {
+  color: #3f444e !important;
+  border-color: #1c222b !important;
+}
+
+/* Pagination Total Text */
+.ant-pagination .ant-pagination-total-text {
+  color: #8a93a0 !important;
+}
+
+/* Pagination Options (Select) */
+.ant-pagination .ant-pagination-options {
+  color: #8a93a0 !important;
+}
+
+.ant-select-dropdown {
+  background: #11161d !important;
+  border: 1px solid #232730 !important;
+}
+
+.ant-select-item {
+  color: #dfe5ee !important;
+}
+
+.ant-select-item-option-selected {
+  background: #232730 !important;
+  color: #33dba8 !important;
+}
+
+.ant-select-item-option-active {
+  background: #1c222b !important;
+}
+
+/* Pagination Quick Jumper */
+.ant-pagination .ant-pagination-options-quick-jumper {
+  color: #8a93a0 !important;
+}
+
+.ant-pagination .ant-pagination-options-quick-jumper input {
+  background: #11161d !important;
+  border-color: #232730 !important;
+  color: #dfe5ee !important;
+}
+
+.ant-pagination .ant-pagination-options-quick-jumper input:focus {
+  border-color: #33dba8 !important;
+  box-shadow: 0 0 0 2px rgba(51, 219, 168, 0.1) !important;
+}
+
+/* Input Search - Dark Mode */
+.ant-input-affix-wrapper {
+  background-color: #11161d !important;
+  border-color: #232730 !important;
+  color: #ffffff !important;
+}
+
+.ant-input {
+  background-color: #11161d !important;
+  color: #ffffff !important;
+}
+
+.ant-input::placeholder {
+  color: #586372 !important;
+}
+
+.ant-input-search .ant-input-search-button {
+  background-color: #232730 !important;
+  border-color: #232730 !important;
+  color: #dfe5ee !important;
+}
+
+.ant-input-search .ant-input-search-button:hover {
+  color: #33dba8 !important;
+}
+
+/* Buttons - Primary & Default */
+.ant-btn-primary {
+  background-color: #33dba8 !important;
+  border-color: #33dba8 !important;
+  color: #0b0e14 !important;
+  /* Dark text on bright button */
+  font-weight: 600;
+  box-shadow: none !important;
+}
+
+.ant-btn-primary:hover {
+  background-color: #2bc495 !important;
+  border-color: #2bc495 !important;
+}
+
+.ant-btn-default {
+  background: transparent !important;
+  border-color: #232730 !important;
+  color: #dfe5ee !important;
+}
+
+.ant-btn-default:hover {
+  border-color: #33dba8 !important;
+  color: #33dba8 !important;
+}
+
+/* Empty State */
+.ant-empty-description {
+  color: #8a93a0 !important;
+}
+
+/* Remove Table Borders */
+.ant-table-wrapper .ant-table-container {
+  border-radius: 8px 8px 0 0 !important;
+  /* Rounded corners top */
+}

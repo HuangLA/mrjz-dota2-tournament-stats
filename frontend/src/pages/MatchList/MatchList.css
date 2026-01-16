@@ -1,0 +1,145 @@
+/* MatchList Page Specific Styles */
+
+.match-list-container {
+  padding: 32px 48px;
+  background: #0b0e14;
+  /* Deep Dark */
+  min-height: 100vh;
+  /* Centering Layout */
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.match-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  background: transparent;
+}
+
+.match-list-header .header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.match-list-header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: #ebedf2;
+  letter-spacing: 0.5px;
+  /* text-transform: uppercase; - Optional if you want Chinese title uppercase? No */
+}
+
+.league-stats {
+  font-size: 14px;
+  color: #6e7989;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+
+/* Main Table Card */
+.match-table {
+  background: #11161d;
+  border-radius: 8px;
+  padding: 0;
+  /* Remove internal padding to let table stretch */
+  border: 1px solid #1c222b;
+  overflow: hidden;
+  /* For rounded corners */
+}
+
+.match-table a {
+  color: #dfe5ee;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.match-table a:hover {
+  color: #33dba8;
+}
+
+/* Column Components */
+
+/* Date & Time */
+.match-time-group {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.5;
+}
+
+.match-date-text {
+  color: #ebedf2;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.match-time-text {
+  color: #6e7989;
+  font-size: 12px;
+}
+
+/* Result Badge */
+.result-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 100px;
+  /* Pill shape */
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  /* For English or stylistic Chinese */
+  letter-spacing: 0.5px;
+  min-width: 100px;
+  text-align: center;
+}
+
+.result-badge.radiant {
+  color: #0dc98b;
+  background: rgba(13, 201, 139, 0.1);
+  border: 1px solid rgba(13, 201, 139, 0.25);
+  box-shadow: 0 0 12px rgba(13, 201, 139, 0.1);
+}
+
+.result-badge.dire {
+  color: #ff3a48;
+  background: rgba(255, 58, 72, 0.1);
+  border: 1px solid rgba(255, 58, 72, 0.25);
+  box-shadow: 0 0 12px rgba(255, 58, 72, 0.1);
+}
+
+/* Game Mode */
+.game-mode-text {
+  color: #8a93a0;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Team Names */
+.team-name {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-align: center;
+  min-width: 120px;
+}
+
+.team-name.radiant {
+  color: #0dc98b;
+  background: rgba(13, 201, 139, 0.08);
+  border: 1px solid rgba(13, 201, 139, 0.15);
+}
+
+.team-name.dire {
+  color: #ff3a48;
+  background: rgba(255, 58, 72, 0.08);
+  border: 1px solid rgba(255, 58, 72, 0.15);
+}

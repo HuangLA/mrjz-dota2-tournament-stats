@@ -1,0 +1,37 @@
+/* 更新经济数据列样式以匹配新的 grid 布局 */
+.col-hero {
+    width: 80px;
+}
+
+.col-player {
+    min-width: 150px;
+}
+
+.col-kda {
+    width: 100px;
+}
+
+.col-lhd {
+    width: 70px;
+    text-align: center;
+}
+
+.col-nw {
+    width: 80px;
+    text-align: right;
+}
+
+.col-gpm,
+.col-xpm {
+    width: 60px;
+    text-align: center;
+}
+
+.col-damage {
+    width: 80px;
+    text-align: right;
+}
+
+.col-items {
+    width: 160px;
+}

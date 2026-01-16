@@ -1,0 +1,92 @@
+/* Navbar Styles */
+
+.navbar {
+    background: #11161d;
+    border-bottom: 1px solid #1c222b;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 48px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar-brand {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ebedf2;
+}
+
+.navbar-brand a {
+    color: #ebedf2;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.navbar-brand a:hover {
+    color: #33dba8;
+}
+
+.navbar-links {
+    display: flex;
+    gap: 32px;
+}
+
+.nav-link {
+    color: #8a93a0;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: #ebedf2;
+    background: rgba(51, 219, 168, 0.1);
+}
+
+.nav-link.active {
+    color: #33dba8;
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #33dba8;
+    border-radius: 3px 3px 0 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .navbar-container {
+        padding: 0 24px;
+    }
+
+    .navbar-brand {
+        font-size: 20px;
+    }
+
+    .navbar-links {
+        gap: 16px;
+    }
+
+    .nav-link {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+}

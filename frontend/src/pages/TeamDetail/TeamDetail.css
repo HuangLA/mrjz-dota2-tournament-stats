@@ -1,0 +1,211 @@
+/* Team Detail Container */
+.team-detail-container {
+    padding: 32px 48px;
+    background: #0b0e14;
+    min-height: calc(100vh - 60px);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: #8a93a0;
+    font-size: 16px;
+}
+
+/* Team Header */
+.team-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+    padding: 24px;
+    background: #11161d;
+    border-radius: 8px;
+    border: 1px solid #1c222b;
+}
+
+.team-info-section {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.team-logo-large {
+    width: 96px;
+    height: 96px;
+    border-radius: 12px;
+    object-fit: cover;
+    background: #1c222b;
+    flex-shrink: 0;
+}
+
+.team-logo-large-placeholder {
+    width: 96px;
+    height: 96px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #1c222b 0%, #2a3240 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8a93a0;
+    font-size: 48px;
+    flex-shrink: 0;
+}
+
+.team-details h1 {
+    margin: 0 0 12px 0;
+    font-size: 32px;
+    font-weight: 800;
+    color: #ebedf2;
+}
+
+.team-stats-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.team-stats-row .stat-item {
+    font-size: 16px;
+    font-weight: 600;
+    color: #8a93a0;
+}
+
+/* Members Section */
+.members-section {
+    margin-bottom: 32px;
+    padding: 24px;
+    background: #11161d;
+    border-radius: 8px;
+    border: 1px solid #1c222b;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #1c222b;
+    margin-bottom: 16px;
+}
+
+.section-header:hover h2 {
+    color: #33dba8;
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #ebedf2;
+    transition: color 0.2s;
+}
+
+.members-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.member-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #0b0e14;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.member-card:hover {
+    background: #1c222b;
+}
+
+.member-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.member-avatar-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #1c222b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8a93a0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.member-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.member-nickname {
+    color: #ebedf2;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.member-matches {
+    color: #8a93a0;
+    font-size: 12px;
+}
+
+/* Matches Section */
+.matches-section {
+    padding: 24px;
+    background: #11161d;
+    border-radius: 8px;
+    border: 1px solid #1c222b;
+}
+
+.matches-section h2 {
+    margin: 0 0 20px 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #ebedf2;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+    .members-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .team-detail-container {
+        padding: 24px;
+    }
+
+    .team-detail-header {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .team-info-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .members-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MRJZ Debug Page</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        .status {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .test-section {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            padding: 15px;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>MRJZ Frontend Debugger</h1>
+
+    <div class="test-section">
+        <h2>1. Image Path Test</h2>
+        <p>Trying to load: <code>/assets/heroes/antimage.png</code></p>
+        <div id="img-test">
+            <img src="/assets/heroes/antimage.png" alt="Test Image" width="64"
+                onload="logSuccess('img-status', 'Image loaded successfully!')"
+                onerror="logError('img-status', 'Image failed to load!')">
+        </div>
+        <div id="img-status" class="status">Loading image...</div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Backend API Test</h2>
+        <p>Trying to fetch: <code>http://localhost:3001/api/matches/8339878490</code></p>
+        <div id="api-status" class="status">Calling API...</div>
+        <pre id="api-result" style="max-height: 200px; overflow: auto; background: #eee; padding: 10px;"></pre>
+    </div>
+
+    <script>
+        function logSuccess(id, msg) {
+            const el = document.getElementById(id);
+            el.className = 'status success';
+            el.textContent = '✅ ' + msg;
+        }
+
+        function logError(id, msg) {
+            const el = document.getElementById(id);
+            el.className = 'status error';
+            el.textContent = '❌ ' + msg;
+        }
+
+        // Test API
+        fetch('http://localhost:3001/api/matches/8339878490')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.data && data.data.players && data.data.players.length > 0) {
+                    logSuccess('api-status', 'API connected and returned players data!');
+                    document.getElementById('api-result').textContent = JSON.stringify(data.data.players[0], null, 2);
+                } else {
+                    logError('api-status', 'API connected but missing players data!');
+                    document.getElementById('api-result').textContent = JSON.stringify(data, null, 2);
+                }
+            })
+            .catch(err => {
+                logError('api-status', 'API call failed: ' + err.message);
+                document.getElementById('api-result').textContent = err.stack;
+            });
+    </script>
+</body>
+
+</html>
