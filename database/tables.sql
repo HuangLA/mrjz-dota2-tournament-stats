@@ -129,6 +129,19 @@ CREATE TABLE IF NOT EXISTS `sync_logs` (
   INDEX `idx_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='数据同步记录表';
 
+-- 8. 赛季配置表
+CREATE TABLE IF NOT EXISTS `editions` (
+  `edition_id` INT PRIMARY KEY AUTO_INCREMENT COMMENT '赛季ID',
+  `edition_number` INT NOT NULL COMMENT '赛季编号',
+  `edition_name` VARCHAR(100) NOT NULL COMMENT '赛季名称',
+  `start_date` DATETIME COMMENT '开始日期',
+  `end_date` DATETIME COMMENT '结束日期',
+  `description` TEXT COMMENT '赛季描述',
+  `is_active` TINYINT(1) DEFAULT 1 COMMENT '是否激活',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='赛季配置表';
+
 -- 显示创建结果
 SELECT 'All tables created successfully!' AS message;
 SELECT 'Updated: 2026-01-15 - Added backpack, neutral items, lane, and economy fields to match_players table' AS update_info;
