@@ -1,8 +1,8 @@
 # MRJZ API 文档
 
-**版本**: v1.0  
+**版本**: v1.1  
 **基础URL**: `http://localhost:3001/api`  
-**最后更新**: 2026-01-13
+**最后更新**: 2026-01-24
 
 ---
 
@@ -82,7 +82,10 @@ curl "http://localhost:3001/api/matches?page=1&limit=5&league_id=17485"
       "radiant_score": 32,
       "dire_score": 18,
       "game_mode": 2,
-      "analysis_status": "completed"
+      "analysis_status": "completed",
+      "parse_requested": false,
+      "is_parsed": true,
+      "parse_requested_at": null
     }
   ],
   "pagination": {
@@ -237,6 +240,130 @@ curl "http://localhost:3001/api/matches/8329062663/achievements"
   ]
 }
 ```
+
+---
+
+### 5. 请求OpenDota解析比赛
+
+**端点**: `POST /api/matches/:matchId/request-parse`
+
+**描述**: 向OpenDota请求解析指定比赛，用于获取详细的比赛数据（如objectives）
+
+**路径参数**:
+- `matchId`: 比赛ID
+
+**请求示例**:
+```bash
+curl -X POST "http://localhost:3001/api/matches/8329062663/request-parse"
+```
+
+**成功响应示例**:
+```json
+{
+  "success": true,
+  "data": {
+    "message": "已请求OpenDota解析比赛，请稍后刷新数据",
+    "jobId": 12345
+  }
+}
+```
+
+**错误响应示例**:
+```json
+{
+  "success": false,
+  "error": {
+    "code": "ALREADY_REQUESTED",
+    "message": "已经请求过解析，请稍后刷新数据"
+  }
+}
+```
+
+**说明**:
+- 每场比赛只能请求一次解析
+- 解析需要时间，请求后需要等待几分钟再刷新数据
+- 已解析的比赛会有 `is_parsed: true` 标记
+
+---
+
+### 6. 刷新比赛数据
+
+**端点**: `POST /api/matches/:matchId/refresh`
+
+**描述**: 从OpenDota重新获取比赛数据并更新数据库
+
+**路径参数**:
+- `matchId`: 比赛ID
+
+**请求示例**:
+```bash
+curl -X POST "http://localhost:3001/api/matches/8329062663/refresh"
+```
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "data": {
+    "message": "比赛数据已刷新",
+    "match": {
+      "match_id": 8329062663,
+      "league_id": 17485,
+      "start_time": "2024-12-15T10:30:00.000Z",
+      "duration": 2145,
+      "radiant_win": true,
+      "radiant_score": 32,
+      "dire_score": 18,
+      "parse_requested": true,
+      "is_parsed": true,
+      "parse_requested_at": "2024-12-15T11:00:00.000Z",
+      "players": [...]
+    },
+    "isParsed": true
+  }
+}
+```
+
+**说明**:
+- 会重新从OpenDota获取最新的比赛数据
+- 自动检测比赛是否已解析（通过objectives字段）
+- 已解析的比赛会重新检测成就
+
+---
+
+### 7. 强制刷新比赛数据
+
+**端点**: `POST /api/matches/force-refresh`
+
+**描述**: 删除指定联赛的所有比赛数据并重新同步（管理功能）
+
+**查询参数**:
+- `league_id` (必需): 联赛ID
+
+**请求示例**:
+```bash
+curl -X POST "http://localhost:3001/api/matches/force-refresh?league_id=17485"
+```
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "data": {
+    "message": "强制刷新完成",
+    "deleted": 26,
+    "synced": 26,
+    "total": 26,
+    "duration": "45.23s"
+  }
+}
+```
+
+**说明**:
+- 会删除该联赛的所有现有数据
+- 从Steam API重新获取比赛列表
+- 从OpenDota重新同步所有比赛详情
+- 操作耗时较长，请耐心等待
 
 ---
 
