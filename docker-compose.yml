@@ -3,7 +3,10 @@ version: '3.8'
 services:
   # MySQL 数据库服务
   mysql:
-    image: mysql:8.0
+  mysql:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
     container_name: mrjz-mysql
     restart: unless-stopped
     ports:
@@ -17,8 +20,6 @@ services:
     volumes:
       # 数据持久化
       - mysql-data:/var/lib/mysql
-      # 数据库初始化脚本
-      - ./database/init:/docker-entrypoint-initdb.d:ro
     networks:
       - mrjz-network
     healthcheck:
