@@ -10,8 +10,8 @@ RUN apk add --no-cache wget
 # 复制 package.json 和 package-lock.json
 COPY package*.json ./
 
-# 安装依赖
-RUN npm ci --only=production
+# 安装依赖（仅生产环境）
+RUN npm ci --omit=dev
 
 # 复制源代码
 COPY . .
