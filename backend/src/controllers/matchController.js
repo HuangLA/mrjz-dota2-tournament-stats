@@ -36,7 +36,10 @@ class MatchController {
                     'dire_team_id',
                     'dire_team_name',
                     'game_mode',
-                    'analysis_status'
+                    'analysis_status',
+                    'parse_requested',
+                    'is_parsed',
+                    'parse_requested_at'
                 ],
                 include: [
                     {
@@ -227,6 +230,136 @@ class MatchController {
             });
         } catch (error) {
             console.error('Force refresh error:', error);
+            next(error);
+        }
+    }
+
+    /**
+     * 请求OpenDota解析比赛
+     * POST /api/matches/:matchId/request-parse
+     */
+    async requestParse(req, res, next) {
+        try {
+            const { matchId } = req.params;
+
+            // 查找比赛
+            const match = await Match.findByPk(matchId);
+            if (!match) {
+                return res.status(404).json({
+                    success: false,
+                    error: {
+                        code: 'NOT_FOUND',
+                        message: '比赛不存在'
+                    }
+                });
+            }
+
+            // 检查是否已请求解析
+            if (match.parse_requested) {
+                return res.status(400).json({
+                    success: false,
+                    error: {
+                        code: 'ALREADY_REQUESTED',
+                        message: '已经请求过解析，请稍后刷新数据'
+                    }
+                });
+            }
+
+            // 调用OpenDota API请求解析
+            const axios = require('axios');
+            try {
+                const response = await axios.post(`https://api.opendota.com/api/request/${matchId}`);
+                console.log(`✅ Requested parse for match ${matchId}:`, response.data);
+
+                // 更新数据库
+                await match.update({
+                    parse_requested: true,
+                    parse_requested_at: new Date()
+                });
+
+                res.json({
+                    success: true,
+                    data: {
+                        message: '已请求OpenDota解析比赛，请稍后刷新数据',
+                        jobId: response.data.job?.jobId
+                    }
+                });
+            } catch (apiError) {
+                console.error('OpenDota API error:', apiError.response?.data || apiError.message);
+                return res.status(500).json({
+                    success: false,
+                    error: {
+                        code: 'OPENDOTA_ERROR',
+                        message: 'OpenDota API请求失败',
+                        details: apiError.response?.data || apiError.message
+                    }
+                });
+            }
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    /**
+     * 刷新比赛数据
+     * POST /api/matches/:matchId/refresh
+     */
+    async refreshMatch(req, res, next) {
+        try {
+            const { matchId } = req.params;
+
+            // 查找比赛
+            const match = await Match.findByPk(matchId);
+            if (!match) {
+                return res.status(404).json({
+                    success: false,
+                    error: {
+                        code: 'NOT_FOUND',
+                        message: '比赛不存在'
+                    }
+                });
+            }
+
+            // 调用syncService重新同步这场比赛
+            console.log(`🔄 Refreshing match ${matchId}...`);
+            const result = await syncService.syncSingleMatch(matchId);
+
+            if (!result.success) {
+                return res.status(500).json({
+                    success: false,
+                    error: {
+                        code: 'SYNC_FAILED',
+                        message: result.error || '刷新失败'
+                    }
+                });
+            }
+
+            // 重新获取更新后的比赛数据
+            const updatedMatch = await Match.findByPk(matchId, {
+                include: [
+                    {
+                        model: MatchPlayer,
+                        as: 'players',
+                        include: [
+                            {
+                                model: Player,
+                                as: 'Player',
+                                attributes: ['player_id', 'steam_id', 'nickname', 'avatar_url']
+                            }
+                        ]
+                    }
+                ]
+            });
+
+            res.json({
+                success: true,
+                data: {
+                    message: '比赛数据已刷新',
+                    match: updatedMatch,
+                    isParsed: updatedMatch.is_parsed
+                }
+            });
+        } catch (error) {
             next(error);
         }
     }

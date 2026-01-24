@@ -37,3 +37,19 @@ export const getMatchPlayers = (matchId) => {
 export const getMatchAchievements = (matchId) => {
     return apiClient.get(`/matches/${matchId}/achievements`);
 };
+
+/**
+ * 请求OpenDota解析比赛
+ * @param {number} matchId - 比赛ID
+ */
+export const requestParse = (matchId) => {
+    return apiClient.post(`/matches/${matchId}/request-parse`);
+};
+
+/**
+ * 刷新比赛数据
+ * @param {number} matchId - 比赛ID
+ */
+export const refreshMatch = (matchId) => {
+    return apiClient.post(`/matches/${matchId}/refresh`);
+};

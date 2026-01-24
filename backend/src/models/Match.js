@@ -60,6 +60,23 @@ const Match = sequelize.define('Match', {
     game_mode: {
         type: DataTypes.INTEGER,
         comment: '游戏模式'
+    },
+    parse_requested: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+        comment: '是否已请求OpenDota解析'
+    },
+    is_parsed: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+        comment: '是否已完全解析（有objectives数据）'
+    },
+    parse_requested_at: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        comment: '请求解析的时间'
     }
 }, {
     tableName: 'matches',

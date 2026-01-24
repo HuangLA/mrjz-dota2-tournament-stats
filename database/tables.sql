@@ -1,6 +1,6 @@
 -- ============================================
 -- MRJZ 数据库表结构脚本
--- 最后更新: 2026-01-15
+-- 最后更新: 2026-01-24
 -- ============================================
 
 USE `mrjz`;
@@ -19,10 +19,14 @@ CREATE TABLE IF NOT EXISTS `matches` (
   `dire_team_id` INT NULL COMMENT '夜魇队伍ID',
   `dire_team_name` VARCHAR(255) NULL COMMENT '夜魇队伍名称',
   `game_mode` INT COMMENT '游戏模式',
+  `parse_requested` BOOLEAN DEFAULT FALSE NOT NULL COMMENT '是否已请求OpenDota解析',
+  `is_parsed` BOOLEAN DEFAULT FALSE NOT NULL COMMENT '是否已完全解析（有objectives数据）',
+  `parse_requested_at` DATETIME NULL COMMENT '请求解析的时间',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   INDEX `idx_league_id` (`league_id`),
-  INDEX `idx_start_time` (`start_time`)
+  INDEX `idx_start_time` (`start_time`),
+  INDEX `idx_is_parsed` (`is_parsed`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='比赛表';
 
 -- 2. 选手表
@@ -144,4 +148,4 @@ CREATE TABLE IF NOT EXISTS `editions` (
 
 -- 显示创建结果
 SELECT 'All tables created successfully!' AS message;
-SELECT 'Updated: 2026-01-15 - Added backpack, neutral items, lane, and economy fields to match_players table' AS update_info;
+SELECT 'Updated: 2026-01-24 - Added parse status fields (parse_requested, is_parsed, parse_requested_at) to matches table' AS update_info;

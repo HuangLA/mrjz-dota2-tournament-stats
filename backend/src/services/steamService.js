@@ -92,6 +92,8 @@ class SteamService {
                     dire_score: data.dire_score,
                     game_mode: data.game_mode,
                     league_id: data.leagueid,
+                    leagueid: data.leagueid,
+                    objectives: data.objectives, // 传递 objectives 数据用于解析状态检测和成就检测
                     players: data.players ? data.players.map(p => ({
                         account_id: p.account_id,
                         player_slot: p.player_slot,
@@ -119,10 +121,9 @@ class SteamService {
                         hero_damage: p.hero_damage,
                         tower_damage: p.tower_damage,
                         hero_healing: p.hero_healing,
-                        multi_kills: p.multi_kills,
-                        first_blood_claimed: p.firstblood_claimed,
-                        rampage: p.multi_kills >= 5,
-                        godlike: p.multi_kills >= 3
+                        multi_kills: p.multi_kills || {}, // 多杀数据（对象格式）
+                        kill_streaks: p.kill_streaks || {}, // 连杀数据（对象格式）
+                        firstblood_claimed: p.firstblood_claimed || 0
                     })) : []
                 };
             }

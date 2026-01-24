@@ -1,9 +1,19 @@
-import apiClient from './axios';
+import axios from 'axios';
+
+const API_BASE_URL = 'http://localhost:3001/api';
 
 /**
- * 触发比赛同步
- * @param {number} leagueId - 联赛ID
+ * 获取同步状态
  */
-export const triggerSync = (leagueId) => {
-    return apiClient.post(`/sync/matches?league_id=${leagueId}`);
+export const getSyncStatus = async () => {
+    const response = await axios.get(`${API_BASE_URL}/sync/status`);
+    return response.data;
+};
+
+/**
+ * 触发同步
+ */
+export const triggerSync = async (leagueId) => {
+    const response = await axios.post(`${API_BASE_URL}/sync/trigger?league_id=${leagueId}`);
+    return response.data;
 };

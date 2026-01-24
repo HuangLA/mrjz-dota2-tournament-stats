@@ -1,0 +1,88 @@
+.sync-progress-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+}
+
+.sync-progress-content {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    min-width: 500px;
+    max-width: 600px;
+    text-align: center;
+    overflow: hidden;
+    /* 防止进度条动画溢出 */
+}
+
+.sync-progress-content h3 {
+    margin: 0 0 30px 0;
+    font-size: 24px;
+    color: #1890ff;
+}
+
+.sync-info {
+    margin-top: 20px;
+}
+
+.sync-count {
+    font-size: 18px;
+    margin: 10px 0;
+    color: #333;
+}
+
+.sync-count strong {
+    font-size: 24px;
+    color: #1890ff;
+}
+
+.sync-detail {
+    font-size: 14px;
+    color: #666;
+    margin: 8px 0;
+}
+
+.sync-time {
+    font-size: 14px;
+    color: #999;
+    margin: 8px 0;
+}
+
+.sync-tip {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+}
+
+/* 进度条容器 */
+.sync-progress-wrapper {
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+/* 进度条动画 */
+.sync-progress-content :global(.ant-progress-bg) {
+    animation: progress-glow 2s ease-in-out infinite;
+}
+
+@keyframes progress-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 5px rgba(24, 144, 255, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 15px rgba(24, 144, 255, 0.8);
+    }
+}

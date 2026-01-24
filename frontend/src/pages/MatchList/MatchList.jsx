@@ -7,6 +7,7 @@ import { triggerSync } from '../../api/sync';
 import { formatTime, formatDuration } from '../../utils/format';
 import { GAME_MODES } from '../../utils/constants';
 import { getHeroIconUrl } from '../../utils/heroMapping';
+import SyncProgress from '../../components/SyncProgress';
 import './MatchList.css';
 
 const { Search } = Input;
@@ -16,6 +17,7 @@ const MatchList = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [syncing, setSyncing] = useState(false);
+    const [syncVisible, setSyncVisible] = useState(false); // 同步进度显示状态
     const [matches, setMatches] = useState([]);
     const [selectedLeague, setSelectedLeague] = useState(18365); // 默认第二届
     const [pagination, setPagination] = useState({
@@ -67,18 +69,22 @@ const MatchList = () => {
 
             // 触发同步
             await triggerSync(selectedLeague);
-            message.success('同步已启动，正在获取数据...');
 
-            // 延迟 3 秒后重新加载数据
-            setTimeout(() => {
-                loadMatches(pagination.current, pagination.pageSize);
-                setSyncing(false);
-            }, 3000);
+            // 显示同步进度
+            setSyncVisible(true);
         } catch (error) {
             console.error('Sync error:', error);
             message.error('同步失败，请稍后重试');
             setSyncing(false);
         }
+    };
+
+    // 同步完成回调
+    const handleSyncComplete = () => {
+        setSyncVisible(false);
+        setSyncing(false);
+        // 刷新比赛列表
+        loadMatches(pagination.current, pagination.pageSize);
     };
 
     // 表格分页变化
@@ -309,6 +315,12 @@ const MatchList = () => {
                     onClick: () => navigate(`/matches/${record.match_id}`),
                     style: { cursor: 'pointer' },
                 })}
+            />
+
+            {/* 同步进度组件 */}
+            <SyncProgress
+                visible={syncVisible}
+                onComplete={handleSyncComplete}
             />
         </div>
     );

@@ -25,7 +25,7 @@ class AchievementService {
             }
 
             // 旗开得胜（首杀）
-            if (this.checkFirstBlood(player)) {
+            if (this.checkFirstBlood(player, matchData)) {
                 achievements.push(this.createAchievement(
                     matchData.match_id,
                     player.player_id,
@@ -38,7 +38,7 @@ class AchievementService {
             }
 
             // 虎口夺食（夺取不朽之守护）
-            if (this.checkAegisSnatch(player)) {
+            if (this.checkAegisSnatch(player, matchData)) {
                 achievements.push(this.createAchievement(
                     matchData.match_id,
                     player.player_id,
@@ -144,25 +144,40 @@ class AchievementService {
     }
 
     /**
-     * 检测暴虐成狂（5杀或以上）
+     * 检测暴虐成狂（5杀）
+     * multi_kills是对象，键为连杀数，值为次数
+     * 例如: { "2": 3, "5": 1 } 表示双杀3次，五杀1次
      */
     checkRampage(player) {
-        // 检查 multi_kills 字段（如果有）或者根据连杀记录
-        return player.multi_kills >= 5 || player.rampage === true;
+        return player.multi_kills && player.multi_kills["5"] > 0;
     }
 
     /**
      * 检测首杀
+     * 使用objectives中的CHAT_MESSAGE_FIRSTBLOOD事件
      */
-    checkFirstBlood(player) {
-        return player.first_blood_claimed === true;
+    checkFirstBlood(player, matchData) {
+        if (!matchData.objectives) return false;
+
+        return matchData.objectives.some(obj =>
+            obj.type === 'CHAT_MESSAGE_FIRSTBLOOD' &&
+            obj.player_slot === player.player_slot
+        );
     }
 
     /**
-     * 检测夺取不朽之守护
+     * 检测虎口夺食（抢夺不朽之守护）
+     * 使用objectives中的CHAT_MESSAGE_AEGIS_STOLEN事件
+     * OpenDota API已经帮我们判断好了是否是抢盾
      */
-    checkAegisSnatch(player) {
-        return player.aegis_snatched && player.aegis_snatched > 0;
+    checkAegisSnatch(player, matchData) {
+        if (!matchData.objectives) return false;
+
+        // 直接查找AEGIS_STOLEN事件
+        return matchData.objectives.some(obj =>
+            obj.type === 'CHAT_MESSAGE_AEGIS_STOLEN' &&
+            obj.player_slot === player.player_slot
+        );
     }
 
     /**
@@ -173,11 +188,17 @@ class AchievementService {
     }
 
     /**
-     * 检测超神杀戮
+     * 检测超神杀戮（连杀≥10）
+     * kill_streaks是对象，键为连杀数，值为次数
+     * 例如: { "3": 1, "10": 1, "20": 1 } 表示达到过3、10、20连杀
      */
     checkGodlike(player) {
-        // 超神（连续击杀不死）
-        return player.multi_kills >= 3 || player.godlike === true;
+        if (!player.kill_streaks) return false;
+
+        // 检查是否有≥10的连杀记录
+        return Object.keys(player.kill_streaks).some(streak =>
+            parseInt(streak) >= 10
+        );
     }
 
     /**
@@ -221,3 +242,4 @@ class AchievementService {
 }
 
 module.exports = new AchievementService();
+

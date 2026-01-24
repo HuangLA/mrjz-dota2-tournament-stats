@@ -1,14 +1,19 @@
-/**
- * 同步相关路由
- */
 const express = require('express');
 const router = express.Router();
 const syncController = require('../controllers/syncController');
 
 /**
- * POST /api/sync/matches?league_id=xxx
- * 手动触发比赛同步
+ * @route   GET /api/sync/status
+ * @desc    获取当前同步状态
+ * @access  Public
  */
-router.post('/matches', syncController.syncMatches.bind(syncController));
+router.get('/status', syncController.getSyncStatus);
+
+/**
+ * @route   POST /api/sync/trigger
+ * @desc    触发数据同步
+ * @access  Public
+ */
+router.post('/trigger', syncController.triggerSync);
 
 module.exports = router;

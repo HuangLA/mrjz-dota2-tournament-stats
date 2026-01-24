@@ -3,6 +3,60 @@ const achievementService = require('./achievementService');
 const { Match, Player, MatchPlayer, Hero, SyncLog } = require('../models');
 
 class SyncService {
+    constructor() {
+        // 同步状态管理
+        this.syncStatus = {
+            isRunning: false,
+            progress: { current: 0, total: 0 },
+            currentMatch: null,
+            startTime: null,
+            error: null,
+            leagueId: null
+        };
+    }
+
+    /**
+     * 获取当前同步状态
+     * @returns {Object} 同步状态信息
+     */
+    getSyncStatus() {
+        return {
+            ...this.syncStatus,
+            duration: this.syncStatus.startTime
+                ? Date.now() - this.syncStatus.startTime
+                : 0
+        };
+    }
+
+    /**
+     * 更新同步进度
+     * @param {number} current - 当前进度
+     * @param {number} total - 总数
+     * @param {Object} matchInfo - 当前比赛信息
+     */
+    updateProgress(current, total, matchInfo = null) {
+        this.syncStatus.progress = { current, total };
+        this.syncStatus.currentMatch = matchInfo;
+
+        if (matchInfo) {
+            console.log(`📊 Progress: ${current}/${total} - Match ${matchInfo.matchId}`);
+        }
+    }
+
+    /**
+     * 重置同步状态
+     */
+    resetSyncStatus() {
+        this.syncStatus = {
+            isRunning: false,
+            progress: { current: 0, total: 0 },
+            currentMatch: null,
+            startTime: null,
+            error: null,
+            leagueId: null
+        };
+    }
+
     /**
      * 同步比赛数据（增量更新）
      * @param {number} leagueId - 联赛ID
@@ -12,6 +66,16 @@ class SyncService {
         const startTime = Date.now();
         let syncedCount = 0;
         let errorMessage = null;
+
+        // 初始化同步状态
+        this.syncStatus = {
+            isRunning: true,
+            progress: { current: 0, total: 0 },
+            currentMatch: null,
+            startTime: Date.now(),
+            error: null,
+            leagueId
+        };
 
         try {
             console.log(`🔄 Starting match sync for league ${leagueId}...`);
@@ -32,8 +96,12 @@ class SyncService {
             const newMatches = allMatches.filter(m => !existingMatchIds.includes(m.match_id));
             console.log(`✨ ${newMatches.length} new matches to sync`);
 
+            // 更新总数
+            this.updateProgress(0, newMatches.length);
+
             if (newMatches.length === 0) {
                 console.log('✅ No new matches to sync');
+                this.syncStatus.isRunning = false;
                 await this.logSync('match', 'success', null, 0);
                 return { synced: 0, total: allMatches.length };
             }
@@ -47,8 +115,22 @@ class SyncService {
 
                 try {
                     console.log(`[${i + 1}/${newMatches.length}] Syncing match ${match.match_id}...`);
+
+                    // 更新当前同步的比赛信息
+                    this.updateProgress(i, newMatches.length, {
+                        matchId: match.match_id,
+                        index: i + 1
+                    });
+
                     await this.syncSingleMatch(match.match_id, leagueId);
                     syncedCount++;
+
+                    // 更新完成进度
+                    this.updateProgress(i + 1, newMatches.length, {
+                        matchId: match.match_id,
+                        index: i + 1
+                    });
+
                     console.log(`✅ Match ${match.match_id} synced successfully`);
                 } catch (error) {
                     console.error(`❌ Failed to sync match ${match.match_id}: ${error.message}`);
@@ -73,6 +155,9 @@ class SyncService {
             // 记录同步日志
             await this.logSync('match', 'success', null, syncedCount);
 
+            // 同步完成，重置状态
+            this.syncStatus.isRunning = false;
+
             return { synced: syncedCount, total: allMatches.length };
 
         } catch (error) {
@@ -86,101 +171,143 @@ class SyncService {
     /**
      * 同步单场比赛
      */
-    async syncSingleMatch(matchId, leagueId) {
+    async syncSingleMatch(matchId, leagueId = null) {
         try {
             // 1. 获取比赛详情
             const matchData = await steamService.getMatchDetails(matchId);
             if (!matchData) {
                 console.warn(`⚠️ No data for match ${matchId}`);
-                return;
+                return { success: false, error: 'No match data available' };
             }
 
-            // 2. 保存比赛基本信息
-            await Match.create({
-                match_id: matchData.match_id,
-                league_id: leagueId,
-                start_time: matchData.start_time,
-                duration: matchData.duration,
-                radiant_win: matchData.radiant_win,
-                radiant_score: matchData.radiant_score || 0,
-                dire_score: matchData.dire_score || 0,
-                game_mode: matchData.game_mode
+            // 检查是否已解析（有objectives数据）
+            const isParsed = matchData.objectives !== undefined;
+            console.log(`📊 Match ${matchId} parse status: ${isParsed ? 'PARSED' : 'NOT PARSED'}`);
+
+            // 2. 查找或创建比赛记录
+            const [match, created] = await Match.findOrCreate({
+                where: { match_id: matchData.match_id },
+                defaults: {
+                    match_id: matchData.match_id,
+                    league_id: leagueId || matchData.leagueid,
+                    start_time: matchData.start_time,
+                    duration: matchData.duration,
+                    radiant_win: matchData.radiant_win,
+                    radiant_score: matchData.radiant_score || 0,
+                    dire_score: matchData.dire_score || 0,
+                    game_mode: matchData.game_mode,
+                    is_parsed: isParsed
+                }
             });
+
+            // 如果比赛已存在，更新解析状态和基本信息
+            if (!created) {
+                await match.update({
+                    is_parsed: isParsed,
+                    radiant_score: matchData.radiant_score || 0,
+                    dire_score: matchData.dire_score || 0,
+                    duration: matchData.duration
+                });
+                console.log(`🔄 Updated existing match ${matchId}, is_parsed: ${isParsed}`);
+            } else {
+                console.log(`✨ Created new match ${matchId}, is_parsed: ${isParsed}`);
+            }
 
             // 3. 处理选手数据并创建 player_id 映射
             const players = matchData.players || [];
             const playerIdMap = {}; // account_id -> player_id 映射
 
-            for (const playerData of players) {
-                // 确保选手存在并获取 player 对象
-                const player = await this.ensurePlayer(playerData.account_id);
-                playerIdMap[playerData.account_id] = player.player_id;
+            // 如果是新创建的比赛，需要同步选手数据
+            if (created) {
+                for (const playerData of players) {
+                    // 确保选手存在并获取 player 对象
+                    const player = await this.ensurePlayer(playerData.account_id);
+                    playerIdMap[playerData.account_id] = player.player_id;
 
-                // 保存比赛选手详情（使用正确的 player_id）
-                await MatchPlayer.create({
-                    match_id: matchData.match_id,
-                    player_id: player.player_id, // 使用数据库中的 player_id
-                    hero_id: playerData.hero_id,
-                    team: playerData.player_slot < 128 ? 'radiant' : 'dire',
-                    kills: playerData.kills || 0,
-                    deaths: playerData.deaths || 0,
-                    assists: playerData.assists || 0,
-                    gpm: playerData.gold_per_min || 0,
-                    xpm: playerData.xp_per_min || 0,
-                    items: this.extractItems(playerData),
-                    ability_upgrades: playerData.ability_upgrades || [],
-                    hero_damage: playerData.hero_damage || 0,
-                    tower_damage: playerData.tower_damage || 0,
-                    hero_healing: playerData.hero_healing || 0,
-                    // 背包装备
-                    item_backpack_0: playerData.backpack_0 || null,
-                    item_backpack_1: playerData.backpack_1 || null,
-                    item_backpack_2: playerData.backpack_2 || null,
-                    // 中立装备
-                    item_neutral: playerData.item_neutral || null,
-                    // 路线信息
-                    lane: playerData.lane || null,
-                    // 经济数据
-                    net_worth: playerData.net_worth || 0,
-                    last_hits: playerData.last_hits || 0,
-                    denies: playerData.denies || 0
-                });
+                    // 保存比赛选手详情（使用正确的 player_id）
+                    await MatchPlayer.create({
+                        match_id: matchData.match_id,
+                        player_id: player.player_id, // 使用数据库中的 player_id
+                        hero_id: playerData.hero_id,
+                        team: playerData.player_slot < 128 ? 'radiant' : 'dire',
+                        kills: playerData.kills || 0,
+                        deaths: playerData.deaths || 0,
+                        assists: playerData.assists || 0,
+                        gpm: playerData.gold_per_min || 0,
+                        xpm: playerData.xp_per_min || 0,
+                        items: this.extractItems(playerData),
+                        ability_upgrades: playerData.ability_upgrades || [],
+                        hero_damage: playerData.hero_damage || 0,
+                        tower_damage: playerData.tower_damage || 0,
+                        hero_healing: playerData.hero_healing || 0,
+                        // 背包装备
+                        item_backpack_0: playerData.backpack_0 || null,
+                        item_backpack_1: playerData.backpack_1 || null,
+                        item_backpack_2: playerData.backpack_2 || null,
+                        // 中立装备
+                        item_neutral: playerData.item_neutral || null,
+                        // 路线信息
+                        lane: playerData.lane || null,
+                        // 经济数据
+                        net_worth: playerData.net_worth || 0,
+                        last_hits: playerData.last_hits || 0,
+                        denies: playerData.denies || 0
+                    });
+                }
+            } else {
+                // 如果是更新，只需要获取现有的player_id映射
+                for (const playerData of players) {
+                    const player = await Player.findOne({
+                        where: { steam_id: playerData.account_id.toString() }
+                    });
+                    if (player) {
+                        playerIdMap[playerData.account_id] = player.player_id;
+                    }
+                }
             }
 
-            // 4. 检测并保存成就（使用正确的 player_id）
-            const processedMatchData = {
-                match_id: matchData.match_id,
-                radiant_win: matchData.radiant_win,
-                players: players.map(p => ({
-                    player_id: playerIdMap[p.account_id], // 使用数据库中的 player_id
-                    account_id: p.account_id,
-                    team: p.player_slot < 128 ? 'radiant' : 'dire',
-                    kills: p.kills || 0,
-                    deaths: p.deaths || 0,
-                    assists: p.assists || 0,
-                    multi_kills: p.multi_kills || 0,
-                    first_blood_claimed: p.first_blood_claimed || false,
-                    aegis_snatched: p.aegis_snatched || 0,
-                    rampage: p.rampage || false,
-                    godlike: p.godlike || false
-                }))
-            };
-            await achievementService.detectAndSaveAchievements(processedMatchData);
+            // 4. 检测并保存成就（只有在比赛已解析时才检测）
+            if (isParsed) {
+                const processedMatchData = {
+                    ...matchData,
+                    match_id: matchData.match_id,
+                    radiant_win: matchData.radiant_win,
+                    objectives: matchData.objectives, // 传递objectives数据
+                    players: players.map(p => ({
+                        player_id: playerIdMap[p.account_id], // 使用数据库中的 player_id
+                        account_id: p.account_id,
+                        player_slot: p.player_slot,
+                        team: p.player_slot < 128 ? 'radiant' : 'dire',
+                        kills: p.kills || 0,
+                        deaths: p.deaths || 0,
+                        assists: p.assists || 0,
+                        multi_kills: p.multi_kills || {},
+                        kill_streaks: p.kill_streaks || {},
+                        firstblood_claimed: p.firstblood_claimed || 0
+                    }))
+                };
+                await achievementService.detectAndSaveAchievements(processedMatchData);
+                console.log(`🏆 Achievement detection completed for match ${matchId}`);
+            } else {
+                console.log(`⚠️ Skipping achievement detection for unparsed match ${matchId}`);
+            }
 
             console.log(`✅ Synced match ${matchId}`);
+            return { success: true, isParsed };
 
         } catch (error) {
             console.error(`❌ Failed to sync match ${matchId}:`, error.message);
-            throw error;
+            return { success: false, error: error.message };
         }
     }
 
     /**
-     * 确保选手存在（不存在则创建）
+     * 确保选手存在（不存在则创建并获取信息）
      */
     async ensurePlayer(accountId) {
         if (!accountId) return;
 
+        // 查找或创建选手
         const [player, created] = await Player.findOrCreate({
             where: { steam_id: accountId },
             defaults: {
@@ -190,7 +317,37 @@ class SyncService {
             }
         });
 
+        // 如果是新创建的选手，或者昵称还是占位符，则获取真实信息
+        if (created || player.nickname.startsWith('Player_')) {
+            try {
+                console.log(`📥 Fetching player info for ${accountId}...`);
+
+                // 将32位 account_id 转换为64位 Steam ID
+                const steamId64 = this.accountIdToSteamId64(accountId);
+                const playerInfo = await steamService.getPlayerSummaries(steamId64);
+
+                if (playerInfo) {
+                    await player.update({
+                        nickname: playerInfo.personaname || `Player_${accountId}`,
+                        avatar_url: playerInfo.avatarfull || playerInfo.avatar || null
+                    });
+                    console.log(`✅ Updated player info: ${playerInfo.personaname}`);
+                }
+            } catch (error) {
+                console.error(`⚠️  Failed to fetch player info for ${accountId}:`, error.message);
+                // 继续执行，使用占位符信息
+            }
+        }
+
         return player;
+    }
+
+    /**
+     * 将 Dota 2 account_id (32位) 转换为 Steam ID 64位
+     */
+    accountIdToSteamId64(accountId) {
+        const STEAM_ID_BASE = BigInt('76561197960265728');
+        return (STEAM_ID_BASE + BigInt(accountId)).toString();
     }
 
     /**
