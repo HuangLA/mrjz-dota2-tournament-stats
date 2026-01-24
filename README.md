@@ -48,13 +48,40 @@ MRJZ/
 
 ## 快速开始
 
-### 环境要求
+### 🐳 方式 1: Docker 部署（推荐）
+
+**前置要求**: 只需安装 [Docker Desktop](https://www.docker.com/products/docker-desktop)
+
+```bash
+# 1. 克隆项目
+git clone https://github.com/HuangLA/mrjz-dota2-tournament-stats.git
+cd mrjz-dota2-tournament-stats
+
+# 2. 配置环境变量
+cp .env.example .env
+nano .env  # 填写 STEAM_API_KEY 和数据库密码
+
+# 3. 启动所有服务
+docker-compose up -d
+
+# 4. 访问应用
+# 前端: http://localhost:5173
+# 后端: http://localhost:3001
+```
+
+**详细说明**: 查看 [DOCKER.md](DOCKER.md)
+
+---
+
+### 💻 方式 2: 传统部署
+
+#### 环境要求
 
 - Node.js >= 16
 - MySQL >= 8.0
 - npm 或 yarn
 
-### 后端启动
+#### 后端启动
 
 ```bash
 cd backend
@@ -65,7 +92,7 @@ npm start
 
 服务器将在 `http://localhost:3001` 启动
 
-### 前端启动
+#### 前端启动
 
 ```bash
 cd frontend
@@ -75,7 +102,7 @@ npm run dev
 
 前端将在 `http://localhost:5173` 启动
 
-### 环境变量配置
+#### 环境变量配置
 
 在 `backend/.env` 文件中配置：
 

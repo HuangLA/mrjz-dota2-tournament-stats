@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  # MySQL 数据库服务
+  mysql:
+    image: mysql:8.0
+    container_name: mrjz-mysql
+    restart: unless-stopped
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-mrjz}
+      MYSQL_USER: ${MYSQL_USER:-mrjz_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: Asia/Shanghai
+    volumes:
+      # 数据持久化
+      - mysql-data:/var/lib/mysql
+      # 数据库初始化脚本
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - mrjz-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 后端 API 服务
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mrjz-backend
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT:-3001}:3001"
+    environment:
+      # 数据库配置
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${MYSQL_DATABASE:-mrjz}
+      DB_USER: ${MYSQL_USER:-mrjz_user}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      # API Keys
+      STEAM_API_KEY: ${STEAM_API_KEY}
+      STRATZ_API_TOKEN: ${STRATZ_API_TOKEN}
+      # 应用配置
+      LEAGUE_ID: ${LEAGUE_ID:-18365}
+      SYNC_CRON: ${SYNC_CRON:-0 22 * * *}
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 3001
+      TZ: Asia/Shanghai
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - mrjz-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # 前端服务
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:${BACKEND_PORT:-3001}
+    container_name: mrjz-frontend
+    restart: unless-stopped
+    ports:
+      # 端口映射格式: "主机端口:容器端口"
+      # 修改 .env 中的 FRONTEND_PORT 来更改访问端口
+      - "${FRONTEND_PORT:-5173}:80"
+    depends_on:
+      - backend
+    networks:
+      - mrjz-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  mrjz-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local

@@ -1,0 +1,23 @@
+# 忽略文件
+node_modules
+npm-debug.log
+.env
+.env.local
+.DS_Store
+*.log
+dist
+
+# 开发文件
+*.cjs
+check-*.js
+generate-*.js
+verify-*.js
+download-*.cjs
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea

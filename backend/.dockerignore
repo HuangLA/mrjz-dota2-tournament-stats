@@ -1,0 +1,25 @@
+# 忽略文件
+node_modules
+npm-debug.log
+.env
+.env.local
+.DS_Store
+*.log
+
+# 测试和开发文件
+tests
+*.test.js
+test-*.js
+check-*.js
+verify-*.js
+
+# 文档
+docs
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
