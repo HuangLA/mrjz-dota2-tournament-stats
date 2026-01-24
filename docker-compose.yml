@@ -22,7 +22,7 @@ services:
     networks:
       - mrjz-network
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}" ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}" ]
       interval: 10s
       timeout: 10s
       retries: 10
@@ -71,7 +71,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        VITE_API_URL: http://localhost:${BACKEND_PORT:-3001}
+        VITE_API_URL: /api
     container_name: mrjz-frontend
     restart: unless-stopped
     ports:

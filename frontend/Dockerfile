@@ -15,7 +15,7 @@ RUN npm ci
 COPY . .
 
 # 构建参数
-ARG VITE_API_URL=http://localhost:3001
+ARG VITE_API_URL=/api
 ENV VITE_API_URL=$VITE_API_URL
 
 # 构建应用
@@ -31,6 +31,9 @@ RUN apk add --no-cache wget
 
 # 复制构建产物
 COPY --from=builder /app/dist /usr/share/nginx/html
+
+# 确保 Nginx 用户有权限读取文件
+RUN chmod -R 755 /usr/share/nginx/html
 
 # 复制 Nginx 配置
 COPY nginx.conf /etc/nginx/conf.d/default.conf
