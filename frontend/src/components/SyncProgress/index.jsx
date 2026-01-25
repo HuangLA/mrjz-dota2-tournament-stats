@@ -34,12 +34,23 @@ const SyncProgress = ({ visible, onComplete }) => {
             setStatus(res.data);
 
             // 如果同步完成
-            if (res.data && !res.data.isRunning && res.data.progress.total > 0) {
+            if (res.data && !res.data.isRunning) {
                 stopPolling();
-                message.success(`数据同步完成！成功同步 ${res.data.progress.current} 场比赛`);
-                setTimeout(() => {
-                    onComplete?.();
-                }, 500);
+
+                // 没有比赛需要同步
+                if (res.data.progress.total === 0) {
+                    message.info('暂无新比赛需要同步');
+                    setTimeout(() => {
+                        onComplete?.();
+                    }, 500);
+                }
+                // 有比赛同步完成
+                else if (res.data.progress.total > 0) {
+                    message.success(`数据同步完成！成功同步 ${res.data.progress.current} 场比赛`);
+                    setTimeout(() => {
+                        onComplete?.();
+                    }, 500);
+                }
             }
         } catch (error) {
             console.error('获取同步状态失败:', error);
