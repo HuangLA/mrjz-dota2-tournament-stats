@@ -47,6 +47,11 @@ const Match = sequelize.define('Match', {
         allowNull: true,
         comment: '天辉队伍名称'
     },
+    radiant_team_logo_url: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+        comment: '天辉队伍Logo URL'
+    },
     dire_team_id: {
         type: DataTypes.INTEGER,
         allowNull: true,
@@ -56,6 +61,11 @@ const Match = sequelize.define('Match', {
         type: DataTypes.STRING(255),
         allowNull: true,
         comment: '夜魇队伍名称'
+    },
+    dire_team_logo_url: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+        comment: '夜魇队伍Logo URL'
     },
     game_mode: {
         type: DataTypes.INTEGER,
