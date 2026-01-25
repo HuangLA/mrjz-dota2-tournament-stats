@@ -81,12 +81,32 @@ docker-compose up -d
 - MySQL >= 8.0
 - npm 或 yarn
 
+#### 🗄️ 数据库准备 (重要)
+
+在启动后端之前，必须手动设置本地 MySQL 数据库：
+
+1. 确保 MySQL 服务已运行 (推荐版本 8.0+)
+2. 连接到 MySQL 并执行以下脚本：
+```bash
+# 1. 创建数据库
+source database/init.sql
+
+# 2. 创建表结构
+source database/tables.sql
+```
+> 或者使用 DBeaver / Navicat 等工具运行 `database/init.sql` 和 `database/tables.sql`。
+
 #### 后端启动
 
 ```bash
 cd backend
 npm install
-cp .env.example .env  # 配置环境变量
+
+# 配置环境变量 (必须)
+cp .env.example .env
+# ⚠️ 编辑 .env 文件，填入你的 MySQL 密码 和 Steam API Key
+# nano .env 
+
 npm start
 ```
 
