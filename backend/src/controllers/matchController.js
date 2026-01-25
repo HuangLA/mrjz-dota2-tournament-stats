@@ -36,7 +36,7 @@ class MatchController {
                     'dire_team_id',
                     'dire_team_name',
                     'game_mode',
-                    'analysis_status',
+
                     'parse_requested',
                     'is_parsed',
                     'parse_requested_at'
