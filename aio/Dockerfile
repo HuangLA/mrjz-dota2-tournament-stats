@@ -34,6 +34,9 @@ COPY backend/ ./
 
 # 2. 设置 Frontend (从构建阶段复制)
 COPY --from=frontend-builder /app/frontend/dist /var/www/html
+# 修复权限问题：确保 www-data (Nginx 用户) 可以读取文件
+RUN chown -R www-data:www-data /var/www/html && \
+    chmod -R 755 /var/www/html
 
 # 3. 设置 Database 初始化脚本
 COPY database/*.sql /docker-entrypoint-initdb.d/
