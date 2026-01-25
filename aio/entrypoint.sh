@@ -70,6 +70,13 @@ if ! $MYSQL_CMD -D mrjz -e "DESCRIBE matches;" >/dev/null 2>&1; then
     # 导入其他 sql 文件
     for f in /docker-entrypoint-initdb.d/*.sql; do
         if [ "$f" != "/docker-entrypoint-initdb.d/init.sql" ] && [ "$f" != "/docker-entrypoint-initdb.d/tables.sql" ]; then
+            echo "   - Processing $f..."
+            # 兼容性修复：替换 MySQL 8.0 特有的 collation 为 MariaDB 支持的格式
+            if grep -q "utf8mb4_0900_ai_ci" "$f"; then
+                echo "     ⚠️  Detected MySQL 8.0 collation. Fixing for MariaDB compatibility..."
+                sed -i 's/utf8mb4_0900_ai_ci/utf8mb4_unicode_ci/g' "$f"
+            fi
+            
             echo "   - Running $f..."
             $MYSQL_CMD mrjz < "$f"
         fi
