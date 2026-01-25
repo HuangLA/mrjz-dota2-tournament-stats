@@ -16,16 +16,21 @@ MYSQLADMIN_CMD="mysqladmin -u root"
 
 count=0
 while true; do
-    if mysqladmin ping >/dev/null 2>&1; then
+    # 尝试无密码连接
+    if mysql -u root -e "SELECT 1" >/dev/null 2>&1; then
         echo "   ✅ MariaDB is online (no password)."
+        MYSQL_CMD="mysql -u root"
+        MYSQLADMIN_CMD="mysqladmin -u root"
         break
     fi
-    if mysqladmin -u root -pmrjz_password ping >/dev/null 2>&1; then
+    # 尝试有密码连接
+    if mysql -u root -pmrjz_password -e "SELECT 1" >/dev/null 2>&1; then
         echo "   ✅ MariaDB is online (with password)."
         MYSQL_CMD="mysql -u root -pmrjz_password"
         MYSQLADMIN_CMD="mysqladmin -u root -pmrjz_password"
         break
     fi
+    
     echo -n "."
     sleep 1
     count=$((count+1))
