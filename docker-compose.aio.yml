@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  mrjz-aio:
+    build:
+      context: .
+      dockerfile: aio/Dockerfile
+    container_name: mrjz-aio
+    restart: unless-stopped
+    ports:
+      - "5173:80" # 访问端口：http://localhost:8080
+    environment:
+      - NODE_ENV=production
+      # 在这里填入你的 API Key
+      - STEAM_API_KEY=E613C759C880A8B3241123D25AF1B0C3
+      - STRATZ_API_TOKEN=
+      - LEAGUE_ID=18365
+    volumes:
+      # 数据持久化：只需映射这一个目录
+      - mrjz-data:/var/lib/mysql
+
+volumes:
+  mrjz-data:
+    driver: local
