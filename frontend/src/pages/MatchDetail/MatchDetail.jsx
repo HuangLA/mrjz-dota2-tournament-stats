@@ -53,10 +53,10 @@ const MatchDetail = () => {
                 getMatchAchievements(id)
             ]);
 
-            if (matchRes.success) {
+            if (matchRes.success && matchRes.data) {
                 setMatch(matchRes.data);
             }
-            if (achievementsRes.success) {
+            if (achievementsRes.success && achievementsRes.data) {
                 setAchievements(achievementsRes.data);
             }
         } catch (error) {

@@ -1,97 +1,24 @@
 version: '3.8'
 
 services:
-  # MySQL 数据库服务
-  mysql:
+  mrjz-aio:
     build:
-      context: ./database
-      dockerfile: Dockerfile
-    container_name: mrjz-mysql
+      context: .
+      dockerfile: aio/Dockerfile
+    container_name: mrjz-aio
     restart: unless-stopped
     ports:
-      - "${MYSQL_PORT:-3306}:3306"
+      - "5173:80" # 访问端口：http://localhost:8080
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-mrjz}
-      MYSQL_USER: ${MYSQL_USER:-mrjz_user}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      TZ: Asia/Shanghai
+      - NODE_ENV=production
+      # 在这里填入你的 API Key
+      - STEAM_API_KEY=E613C759C880A8B3241123D25AF1B0C3
+      - STRATZ_API_TOKEN=
+      - LEAGUE_ID=18365
     volumes:
-      # 数据持久化
-      - mysql-data:/var/lib/mysql
-    networks:
-      - mrjz-network
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}" ]
-      interval: 10s
-      timeout: 10s
-      retries: 30
-      start_period: 300s
-
-  # 后端 API 服务
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: mrjz-backend
-    restart: unless-stopped
-    ports:
-      - "${BACKEND_PORT:-3001}:3001"
-    environment:
-      # 数据库配置
-      DB_HOST: mysql
-      DB_PORT: 3306
-      DB_NAME: ${MYSQL_DATABASE:-mrjz}
-      DB_USER: ${MYSQL_USER:-mrjz_user}
-      DB_PASSWORD: ${MYSQL_PASSWORD}
-      # API Keys
-      STEAM_API_KEY: ${STEAM_API_KEY}
-      STRATZ_API_TOKEN: ${STRATZ_API_TOKEN}
-      # 应用配置
-      LEAGUE_ID: ${LEAGUE_ID:-18365}
-      SYNC_CRON: ${SYNC_CRON:-0 22 * * *}
-      NODE_ENV: ${NODE_ENV:-production}
-      PORT: 3001
-      TZ: Asia/Shanghai
-    depends_on:
-      mysql:
-        condition: service_healthy
-    networks:
-      - mrjz-network
-    healthcheck:
-      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/api/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
-  # 前端服务
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-      args:
-        VITE_API_URL: /api
-    container_name: mrjz-frontend
-    restart: unless-stopped
-    ports:
-      # 端口映射格式: "主机端口:容器端口"
-      # 修改 .env 中的 FRONTEND_PORT 来更改访问端口
-      - "${FRONTEND_PORT:-5173}:80"
-    depends_on:
-      - backend
-    networks:
-      - mrjz-network
-    healthcheck:
-      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-networks:
-  mrjz-network:
-    driver: bridge
+      # 数据持久化：只需映射这一个目录
+      - mrjz-data:/var/lib/mysql
 
 volumes:
-  mysql-data:
+  mrjz-data:
     driver: local

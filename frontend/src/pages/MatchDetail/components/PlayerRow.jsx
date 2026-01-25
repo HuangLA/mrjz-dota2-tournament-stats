@@ -8,7 +8,17 @@ const PlayerRow = ({ player, team }) => {
         ((player.kills + player.assists) / player.deaths).toFixed(2);
 
     // 解析主装备数据
-    const items = player.items || [];
+    let items = [];
+    if (Array.isArray(player.items)) {
+        items = [...player.items];
+    } else if (typeof player.items === 'string') {
+        try {
+            items = JSON.parse(player.items);
+        } catch (e) {
+            items = [];
+        }
+    }
+
     while (items.length < 6) {
         items.push(null);
     }

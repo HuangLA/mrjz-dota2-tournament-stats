@@ -399,7 +399,82 @@
     border-radius: 50%;
 }
 
-.achievement-player-name {
-    font-size: 13px;
-    color: #8a93a0;
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .match-detail-container {
+        padding: 16px;
+    }
+
+    /* Header Adjustments */
+    .match-header {
+        padding: 20px;
+    }
+
+    .match-header-teams {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .match-score {
+        font-size: 36px;
+        order: 2;
+        /* Put score between teams if using column, or maybe just keep typical order but stacked? */
+        /* Actually, usually mobile expects Team A vs Team B. Let's keep order but stack them if they don't fit? */
+        /* Better yet: keep row but allow wrapping. */
+        flex-direction: row;
+    }
+
+    /* Better Mobile Header Layout: Stack Teams Vertical or Keep Row with small font */
+    /* Let's try 3-row stack for very small screens */
+    .match-header-teams {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .team-info {
+        flex-direction: row;
+        justify-content: center;
+        order: 1;
+        /* Radiant on top */
+    }
+
+    .team-info.dire {
+        order: 3;
+        /* Dire on bottom */
+    }
+
+    .match-score {
+        order: 2;
+        /* Score in middle */
+        margin: 10px 0;
+    }
+
+    .match-meta {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    /* Table Scroll */
+    .team-table {
+        padding: 12px;
+    }
+
+    .team-table-content {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Ensure rows are wide enough to not keysmash */
+    .table-header-row,
+    .player-row {
+        min-width: 800px;
+        /* Force minimum width to trigger scroll */
+    }
+
+    /* Achievement Grid */
+    .achievement-list {
+        grid-template-columns: 1fr;
+    }
 }

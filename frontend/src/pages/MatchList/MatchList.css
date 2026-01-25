@@ -143,3 +143,21 @@
   background: rgba(255, 58, 72, 0.08);
   border: 1px solid rgba(255, 58, 72, 0.15);
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .match-list-container {
+    padding: 16px;
+  }
+
+  .match-list-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .match-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
