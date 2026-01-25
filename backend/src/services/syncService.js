@@ -155,16 +155,13 @@ class SyncService {
             // 记录同步日志
             await this.logSync('match', 'success', null, syncedCount);
 
-            // 同步完成，重置状态
-            this.syncStatus.isRunning = false;
-
-            return { synced: syncedCount, total: allMatches.length };
-
         } catch (error) {
             errorMessage = error.message;
             console.error('❌ Match sync failed:', error.message);
             await this.logSync('match', 'failed', errorMessage, syncedCount);
             throw error;
+        } finally {
+            this.syncStatus.isRunning = false;
         }
     }
 

@@ -23,6 +23,8 @@ exports.triggerSync = async (req, res, next) => {
     try {
         const { league_id } = req.query;
 
+        console.log(`🔌 Manual sync trigger received for league ${league_id}`);
+
         if (!league_id) {
             return res.status(400).json({
                 success: false,
