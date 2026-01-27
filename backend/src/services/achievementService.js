@@ -9,6 +9,11 @@ class AchievementService {
     async detectAndSaveAchievements(matchData) {
         const achievements = [];
 
+        // 0. 清除该比赛已有的成就（避免重复更新导致重复数据）
+        await Achievement.destroy({
+            where: { match_id: matchData.match_id }
+        });
+
         // 1. 检测个人成就
         for (const player of matchData.players) {
             // 暴虐成狂（Rampage - 5杀）
