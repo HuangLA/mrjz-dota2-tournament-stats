@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Table, Spin, message, Select, Tag } from 'antd';
 import { TeamOutlined, DownOutlined, UpOutlined } from '@ant-design/icons';
 import { getTeamMatches } from '../../api/teams';
@@ -197,7 +197,14 @@ const TeamDetail = () => {
                                     <div className="member-avatar-placeholder">?</div>
                                 )}
                                 <div className="member-info">
-                                    <span className="member-nickname">{player.nickname}</span>
+                                    <Link
+                                        to={`/players/${player.player_id}`}
+                                        state={{ from: `/teams/${id}`, label: '返回战队详情' }}
+                                        className="member-nickname"
+                                        style={{ textDecoration: 'none', color: 'inherit' }}
+                                    >
+                                        {player.nickname}
+                                    </Link>
                                     <span className="member-matches">{player.matches_played} 场</span>
                                 </div>
                             </div>

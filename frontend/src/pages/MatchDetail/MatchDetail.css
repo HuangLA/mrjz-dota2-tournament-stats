@@ -178,8 +178,8 @@
 
 .table-header-row {
     display: grid;
-    grid-template-columns: 90px 180px 110px 65px 90px 65px 65px 110px 110px 200px;
-    /* hero player kda lh/d nw(+space) gpm xpm damage taken items */
+    grid-template-columns: 90px 180px 110px 65px 90px 65px 65px 110px 110px 110px 200px;
+    /* hero player kda lh/d nw(+space) gpm xpm tower hero taken items */
     gap: 12px;
     padding: 12px 16px;
     background: #1c222b;
@@ -193,8 +193,8 @@
 /* Player Row */
 .player-row {
     display: grid;
-    grid-template-columns: 90px 180px 110px 65px 90px 65px 65px 110px 110px 200px;
-    /* hero player kda lh/d nw(+space) gpm xpm damage taken items */
+    grid-template-columns: 90px 180px 110px 65px 90px 65px 65px 110px 110px 110px 200px;
+    /* hero player kda lh/d nw(+space) gpm xpm tower hero taken items */
     gap: 12px;
     padding: 12px 16px;
     align-items: center;
