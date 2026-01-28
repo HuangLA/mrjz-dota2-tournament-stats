@@ -300,7 +300,7 @@ class PlayerController {
                 attributes: [
                     'hero_id',
                     [MatchPlayer.sequelize.fn('COUNT', MatchPlayer.sequelize.col('id')), 'matches_count'],
-                    [MatchPlayer.sequelize.fn('SUM', MatchPlayer.sequelize.literal("CASE WHEN (team = 'radiant' AND match.radiant_win = 1) OR (team = 'dire' AND match.radiant_win = 0) THEN 1 ELSE 0 END")), 'wins']
+                    [MatchPlayer.sequelize.fn('SUM', MatchPlayer.sequelize.literal("CASE WHEN (team = 'radiant' AND `Match`.`radiant_win` = 1) OR (team = 'dire' AND `Match`.`radiant_win` = 0) THEN 1 ELSE 0 END")), 'wins']
                 ],
                 include: [{
                     model: Match,
