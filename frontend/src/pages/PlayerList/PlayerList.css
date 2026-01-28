@@ -84,23 +84,39 @@
     background: #181d25;
 }
 
-.player-cell {
+.player-info {
     display: flex;
     align-items: center;
-    gap: 12px;
-}
-
-.player-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    object-fit: cover;
-    background: #1c222b;
+    gap: 8px;
 }
 
 .player-name {
     font-weight: 600;
     color: #ebedf2;
+}
+
+.player-avatar-small {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.team-badge {
+    display: inline-block;
+    padding: 1px 6px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #e6bd63;
+    /* 金色字体 */
+    border: 1px solid #7a6331;
+    /* 暗金色边框 */
+    border-radius: 2px;
+    background: rgba(122, 99, 49, 0.15);
+    /* 极淡的金色背景 */
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 5px rgba(230, 189, 99, 0.1);
 }
 
 .stat-cell {
@@ -169,6 +185,7 @@
         padding: 8px 12px;
     }
 }
+
 .no-data-cell {
     padding: 64px !important;
     text-align: center !important;
@@ -182,4 +199,3 @@
     gap: 16px;
     font-size: 16px;
 }
-

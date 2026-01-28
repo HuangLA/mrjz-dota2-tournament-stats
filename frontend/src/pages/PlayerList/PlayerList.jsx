@@ -141,16 +141,23 @@ const PlayerList = () => {
     const columns = [
         {
             key: 'nickname', label: '选手', render: (p) => (
-                <div className="player-cell">
-                    <img
-                        src={p.avatar_url || 'https://www.dota2.com.cn/images/heroes/str_lg.png'}
-                        alt={p.nickname}
-                        className="player-avatar"
-                        onError={(e) => { e.target.src = 'https://www.dota2.com.cn/images/heroes/str_lg.png'; }}
-                    />
-                    <span className="player-name">{p.nickname || `Player ${p.player_id}`}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div className="player-info">
+                        <img
+                            src={p.avatar_url || 'https://www.dota2.com.cn/images/heroes/face/antimage.jpg'}
+                            alt={p.nickname}
+                            className="player-avatar-small"
+                            onError={(e) => { e.target.onerror = null; e.target.src = 'https://www.dota2.com.cn/images/heroes/face/antimage.jpg'; }}
+                        />
+                        <span className="player-name">{p.nickname || `Player ${p.player_id}`}</span>
+                    </div>
+                    {p.team_name && (
+                        <span className="team-badge" title={`所属战队: ${p.team_name}`}>
+                            {p.team_name}
+                        </span>
+                    )}
                 </div>
-            )
+            ),
         },
         { key: 'matches_count', label: '场次', align: 'center', render: (p) => formatInt(p.matches_count) },
         { key: 'win_rate', label: '胜率', render: (p) => `${formatNumber(p.win_rate)}%` },
