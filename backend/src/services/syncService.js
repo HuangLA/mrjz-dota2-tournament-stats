@@ -237,6 +237,7 @@ class SyncService {
                         hero_damage: playerData.hero_damage || 0,
                         tower_damage: playerData.tower_damage || 0,
                         hero_healing: playerData.hero_healing || 0,
+                        damage_taken: playerData.damage_taken || 0,
                         // 背包装备
                         item_backpack_0: playerData.backpack_0 || null,
                         item_backpack_1: playerData.backpack_1 || null,

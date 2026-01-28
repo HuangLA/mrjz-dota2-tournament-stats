@@ -5,6 +5,7 @@ import zhCN from 'antd/locale/zh_CN';
 import Navbar from './components/Navbar';
 import MatchList from './pages/MatchList';
 import MatchDetail from './pages/MatchDetail';
+import PlayerList from './pages/PlayerList/PlayerList';
 import Teams from './pages/Teams';
 import TeamDetail from './pages/TeamDetail';
 import './App.css';
@@ -18,7 +19,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/matches" replace />} />
             <Route path="/matches" element={<MatchList />} />
+
             <Route path="/matches/:id" element={<MatchDetail />} />
+            <Route path="/players" element={<PlayerList />} />
             <Route path="/teams" element={<Teams />} />
             <Route path="/teams/:id" element={<TeamDetail />} />
           </Routes>

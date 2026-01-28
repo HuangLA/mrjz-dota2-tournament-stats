@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Spin, message, Select } from 'antd';
 import { getTeams } from '../../api/teams';
 import TeamCard from './components/TeamCard';
+import NoData from '../../components/common/NoData';
 import './Teams.css';
 
 const { Option } = Select;
@@ -101,8 +102,8 @@ const Teams = () => {
             </div>
 
             {teams.length === 0 && (
-                <div className="empty-state">
-                    <p>暂无战队数据</p>
+                <div style={{ marginTop: '40px' }}>
+                    <NoData message="暂无战队数据" />
                 </div>
             )}
         </div>

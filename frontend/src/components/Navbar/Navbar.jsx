@@ -18,6 +18,12 @@ const Navbar = () => {
                         比赛列表
                     </Link>
                     <Link
+                        to="/players"
+                        className={location.pathname.startsWith('/players') ? 'nav-link active' : 'nav-link'}
+                    >
+                        选手
+                    </Link>
+                    <Link
                         to="/teams"
                         className={location.pathname === '/teams' ? 'nav-link active' : 'nav-link'}
                     >

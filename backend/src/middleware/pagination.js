@@ -7,7 +7,7 @@ const pagination = (req, res, next) => {
     const limit = parseInt(req.query.limit) || 10;
 
     // 限制每页最大数量
-    const maxLimit = 100;
+    const maxLimit = 1000;
     const finalLimit = Math.min(limit, maxLimit);
 
     // 计算偏移量

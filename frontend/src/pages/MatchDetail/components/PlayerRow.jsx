@@ -97,6 +97,10 @@ const PlayerRow = ({ player, team }) => {
                 <span className="stat-value">{player.hero_damage?.toLocaleString() || 0}</span>
             </div>
 
+            <div className="col-damage">
+                <span className="stat-value">{player.damage_taken?.toLocaleString() || 0}</span>
+            </div>
+
             <div className="col-items">
                 <div className="items-container">
                     {/* 左侧：主装备 (6个，2行x3列) + 背包 (3个) */}

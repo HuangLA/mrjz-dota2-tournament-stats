@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS `match_players` (
   `hero_damage` INT DEFAULT 0 COMMENT '英雄伤害',
   `tower_damage` INT DEFAULT 0 COMMENT '建筑伤害',
   `hero_healing` INT DEFAULT 0 COMMENT '英雄治疗',
+  `damage_taken` INT DEFAULT 0 COMMENT '承受伤害',
   -- 新增字段: 背包装备
   `item_backpack_0` INT NULL COMMENT '背包装备1',
   `item_backpack_1` INT NULL COMMENT '背包装备2',

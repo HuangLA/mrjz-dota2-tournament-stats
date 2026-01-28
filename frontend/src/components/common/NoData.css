@@ -1,0 +1,31 @@
+.no-data-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 64px 0;
+    width: 100%;
+}
+
+.no-data-text {
+    color: #8a93a0;
+    font-size: 14px;
+}
+
+/* Override Ant Design Empty styles for dark theme */
+.no-data-container .ant-empty-normal {
+    color: #8a93a0;
+}
+
+.no-data-container .ant-empty-img-simple-g {
+    stroke: #2a323e;
+}
+
+.no-data-container .ant-empty-img-simple-path {
+    fill: #1c222b;
+    stroke: #2a323e;
+}
+
+.no-data-container .ant-empty-img-simple-ellipse {
+    fill: #1c222b;
+    stroke: #2a323e;
+}

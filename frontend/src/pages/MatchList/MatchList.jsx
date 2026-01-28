@@ -8,6 +8,7 @@ import { formatTime, formatDuration } from '../../utils/format';
 import { GAME_MODES } from '../../utils/constants';
 import { getHeroIconUrl } from '../../utils/heroMapping';
 import SyncProgress from '../../components/SyncProgress';
+import NoData from '../../components/common/NoData';
 import './MatchList.css';
 
 const { Search } = Input;
@@ -315,6 +316,9 @@ const MatchList = () => {
                     onClick: () => navigate(`/matches/${record.match_id}`),
                     style: { cursor: 'pointer' },
                 })}
+                locale={{
+                    emptyText: <NoData message="暂无比赛数据" />
+                }}
             />
 
             {/* 同步进度组件 */}

@@ -121,6 +121,7 @@ class SteamService {
                         hero_damage: p.hero_damage,
                         tower_damage: p.tower_damage,
                         hero_healing: p.hero_healing,
+                        damage_taken: p.damage_taken ? Object.values(p.damage_taken).reduce((a, b) => a + b, 0) : 0,
                         multi_kills: p.multi_kills || {}, // 多杀数据（对象格式）
                         kill_streaks: p.kill_streaks || {}, // 连杀数据（对象格式）
                         firstblood_claimed: p.firstblood_claimed || 0
