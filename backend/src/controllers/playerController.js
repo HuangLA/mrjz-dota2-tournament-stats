@@ -259,20 +259,19 @@ class PlayerController {
                 });
             }
 
-            // 获取选手所属战队（基于最近一场比赛）
-            const latestMatch = await MatchPlayer.findOne({
-                where: { player_id: id },
-                include: [{
-                    model: Match,
-                    as: 'Match',
-                    attributes: ['radiant_team_name', 'dire_team_name', 'start_time']
-                }],
-                order: [[{ model: Match, as: 'Match' }, 'start_time', 'DESC']]
+            // 获取选手所属战队（逻辑同列表页：查找最近一个非空的战队名）
+            const teamNameResult = await MatchPlayer.sequelize.query(`
+                SELECT 
+                    SUBSTRING_INDEX(GROUP_CONCAT(NULLIF(CASE WHEN mp.team = 'radiant' THEN m.radiant_team_name ELSE m.dire_team_name END, '') ORDER BY m.start_time DESC SEPARATOR '|||'), '|||', 1) as team_name
+                FROM match_players mp
+                JOIN matches m ON mp.match_id = m.match_id
+                WHERE mp.player_id = :id
+            `, {
+                replacements: { id },
+                type: MatchPlayer.sequelize.QueryTypes.SELECT
             });
 
-            const team_name = latestMatch ? (
-                latestMatch.team === 'radiant' ? latestMatch.Match.radiant_team_name : latestMatch.Match.dire_team_name
-            ) : null;
+            const team_name = teamNameResult[0]?.team_name || null;
 
             // 获取选手的比赛统计
             const matchStats = await MatchPlayer.findAll({
