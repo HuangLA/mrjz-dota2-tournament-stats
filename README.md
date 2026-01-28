@@ -206,6 +206,33 @@ docker volume rm mrjz_mrjz-data
 docker-compose up -d
 ```
 
+### 🧹 清除数据并重新部署
+
+如果您需要彻底清除旧数据（清空数据库）并重新部署最新代码，请在 NAS 终端或命令行中执行以下步骤：
+
+1. **停止服务并删除容器**
+   ```bash
+   docker-compose down
+   ```
+
+2. **删除旧数据库卷** (这一步会永久删除所有历史数据！)
+   ```bash
+   docker volume rm mrjz_mrjz-data
+   ```
+   *注意：如果您的文件夹名不是 `mrjz`，卷名可能是 `文件夹名_mrjz-data`。可以使用 `docker volume ls` 查看准确名称。*
+
+3. **拉取最新代码**
+   ```bash
+   git pull
+   ```
+
+4. **重新构建并启动**
+   ```bash
+   docker-compose up -d --build
+   ```
+
+---
+
 ## 📅 版本历史
 
 ### v1.0.1 (2026-01-28)
@@ -225,6 +252,8 @@ docker-compose up -d
 - **All-in-One 架构**: 单容器部署所有服务
 - **移动端适配**: 优化手机端浏览体验
 - **自动化**: 自动修复数据库兼容性问题
+
+
 ## 许可证
 
 MIT
