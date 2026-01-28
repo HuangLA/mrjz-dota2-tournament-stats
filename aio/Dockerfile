@@ -41,7 +41,7 @@ RUN chown -R www-data:www-data /var/www/html && \
 # 3. 设置 Database 初始化脚本
 COPY database/init.sql /docker-entrypoint-initdb.d/01-init.sql
 COPY database/tables.sql /docker-entrypoint-initdb.d/02-tables.sql
-COPY database/init/*.sql /docker-entrypoint-initdb.d/
+
 
 # 4. 配置 Nginx
 COPY aio/nginx.conf /etc/nginx/sites-available/default
