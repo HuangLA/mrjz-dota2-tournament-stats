@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import MatchList from './pages/MatchList';
 import MatchDetail from './pages/MatchDetail';
 import PlayerList from './pages/PlayerList/PlayerList';
+import PlayerDetail from './pages/PlayerDetail/PlayerDetail';
 import Teams from './pages/Teams';
 import TeamDetail from './pages/TeamDetail';
 import './App.css';
@@ -22,6 +23,7 @@ function App() {
 
             <Route path="/matches/:id" element={<MatchDetail />} />
             <Route path="/players" element={<PlayerList />} />
+            <Route path="/players/:id" element={<PlayerDetail />} />
             <Route path="/teams" element={<Teams />} />
             <Route path="/teams/:id" element={<TeamDetail />} />
           </Routes>

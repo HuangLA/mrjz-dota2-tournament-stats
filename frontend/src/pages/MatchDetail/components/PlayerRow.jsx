@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getHeroIconUrl } from '../../../utils/heroUtils';
 import { getItemImageUrl } from '../../../utils/itemUtils';
 
-const PlayerRow = ({ player, team }) => {
+const PlayerRow = ({ player, team, matchId }) => {
+    const navigate = useNavigate();
     const kda = `${player.kills}/${player.deaths}/${player.assists}`;
     const kdaRatio = player.deaths === 0 ? player.kills + player.assists :
         ((player.kills + player.assists) / player.deaths).toFixed(2);
@@ -48,7 +50,11 @@ const PlayerRow = ({ player, team }) => {
             </div>
 
             <div className="col-player">
-                <div className="player-info">
+                <div
+                    className="player-info"
+                    onClick={() => navigate(`/players/${player.player_id}`, { state: { from: `/matches/${matchId}`, label: '返回比赛' } })}
+                    style={{ cursor: 'pointer' }}
+                >
                     {player.Player?.avatar_url && (
                         <img
                             src={player.Player.avatar_url}
@@ -91,6 +97,10 @@ const PlayerRow = ({ player, team }) => {
 
             <div className="col-xpm">
                 <span className="stat-value">{player.xpm || 0}</span>
+            </div>
+
+            <div className="col-damage">
+                <span className="stat-value">{player.tower_damage?.toLocaleString() || 0}</span>
             </div>
 
             <div className="col-damage">

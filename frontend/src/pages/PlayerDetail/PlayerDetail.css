@@ -1,0 +1,223 @@
+.player-detail-container {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    color: #fff;
+}
+
+/* Glassmorphism Card Style */
+.glass-card {
+    background: rgba(30, 35, 40, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    margin-bottom: 24px;
+}
+
+/* ... existing code ... */
+
+.match-history-table td {
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.match-history-table td:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.match-history-table td:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+/* Profile Header */
+.profile-header {
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+}
+
+.profile-avatar-wrapper {
+    position: relative;
+    width: 128px;
+    height: 128px;
+}
+
+.profile-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 4px solid #cfaa3d;
+    /* Dota 2 Gold */
+    box-shadow: 0 0 20px rgba(207, 170, 61, 0.3);
+    object-fit: cover;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-name-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.profile-nickname {
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.profile-team-badge {
+    background: linear-gradient(135deg, #cfaa3d 0%, #a68420 100%);
+    color: #000;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(207, 170, 61, 0.4);
+}
+
+.profile-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 12px;
+    border-radius: 8px;
+    transition: transform 0.2s;
+}
+
+.stat-item:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.stat-value.highlight {
+    color: #cfaa3d;
+}
+
+/* Signature Heroes */
+.signature-heroes-section {
+    margin-top: 24px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #ccc;
+    border-left: 4px solid #cfaa3d;
+    padding-left: 12px;
+}
+
+.heroes-grid {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.hero-card {
+    position: relative;
+    width: 80px;
+    transition: transform 0.2s;
+}
+
+.hero-card:hover {
+    transform: scale(1.05);
+    z-index: 10;
+}
+
+.hero-card img {
+    width: 100%;
+    /* aspect-ratio: 16/9; note: hero images are usually 16:9 like 256x144*/
+    height: 45px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hero-card-stats {
+    text-align: center;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #ccc;
+}
+
+.win-rate-high {
+    color: #66bb6a;
+}
+
+/* Match History Table Customization */
+.match-history-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.match-history-table th {
+    text-align: left;
+    padding: 12px;
+    color: #888;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.match-history-table td {
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.match-history-table td:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.match-history-table td:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+.match-row {
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.match-row:hover td {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.match-result {
+    font-weight: bold;
+}
+
+.match-result.win {
+    color: #66bb6a;
+}
+
+.match-result.loss {
+    color: #ff5252;
+}

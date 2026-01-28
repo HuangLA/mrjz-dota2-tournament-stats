@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Select } from 'antd';
 import { getPlayers } from '../../api/players';
+import { getHeroIconUrl } from '../../utils/heroUtils';
 import NoData from '../../components/common/NoData';
 import './PlayerList.css';
 
@@ -13,7 +15,7 @@ const PlayerList = () => {
     const [error, setError] = useState(null);
     const [pagination, setPagination] = useState({
         page: 1,
-        limit: 1000,
+        limit: 100,
         total: 0,
         totalPages: 1
     });
@@ -143,13 +145,19 @@ const PlayerList = () => {
             key: 'nickname', label: '选手', render: (p) => (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <div className="player-info">
-                        <img
-                            src={p.avatar_url || 'https://www.dota2.com.cn/images/heroes/face/antimage.jpg'}
-                            alt={p.nickname}
-                            className="player-avatar-small"
-                            onError={(e) => { e.target.onerror = null; e.target.src = 'https://www.dota2.com.cn/images/heroes/face/antimage.jpg'; }}
-                        />
-                        <span className="player-name">{p.nickname || `Player ${p.player_id}`}</span>
+                        <Link
+                            to={`/players/${p.player_id}`}
+                            state={{ from: '/players', label: '返回选手列表' }}
+                            style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}
+                        >
+                            <img
+                                src={p.avatar_url || 'https://www.dota2.com.cn/images/heroes/face/antimage.jpg'}
+                                alt={p.nickname}
+                                className="player-avatar-small"
+                                onError={(e) => { e.target.onerror = null; e.target.src = 'https://www.dota2.com.cn/images/heroes/face/antimage.jpg'; }}
+                            />
+                            <span className="player-name name-link">{p.nickname || `Player ${p.player_id}`}</span>
+                        </Link>
                     </div>
                     {p.team_name && (
                         <span className="team-badge" title={`所属战队: ${p.team_name}`}>
@@ -159,6 +167,24 @@ const PlayerList = () => {
                 </div>
             ),
         },
+        // 新增 擅长英雄
+        {
+            key: 'signature_heroes', label: '擅长英雄', render: (p) => (
+                <div style={{ display: 'flex', gap: '4px' }}>
+                    {p.signature_heroes && p.signature_heroes.slice(0, 3).map(heroId => (
+                        <img
+                            key={heroId}
+                            src={getHeroIconUrl(heroId)}
+                            alt={`Hero ${heroId}`}
+                            title={`Hero ID: ${heroId}`}
+                            style={{ width: '32px', height: '18px', objectFit: 'cover', borderRadius: '2px', backgroundColor: '#000' }}
+                            onError={(e) => { e.target.style.display = 'none'; }}
+                        />
+                    ))}
+                    {(!p.signature_heroes || p.signature_heroes.length === 0) && <span style={{ color: '#666' }}>-</span>}
+                </div>
+            )
+        },
         { key: 'matches_count', label: '场次', align: 'center', render: (p) => formatInt(p.matches_count) },
         { key: 'win_rate', label: '胜率', render: (p) => `${formatNumber(p.win_rate)}%` },
         { key: 'kda_ratio', label: 'KDA', render: (p) => formatNumber(p.kda_ratio, 2) },
@@ -167,9 +193,10 @@ const PlayerList = () => {
         { key: 'avg_assists', label: '场均助攻' },
         { key: 'avg_gpm', label: 'GPM', render: (p) => formatNumber(p.avg_gpm, 2) },
         { key: 'avg_xpm', label: 'XPM', render: (p) => formatNumber(p.avg_xpm, 2) },
-        { key: 'avg_net_worth', label: '场均财产', render: (p) => formatNumber(p.avg_net_worth, 2) },
-        { key: 'avg_hero_damage', label: '场均伤害', render: (p) => formatNumber(p.avg_hero_damage, 2) },
-        { key: 'avg_damage_taken', label: '场均承伤', render: (p) => formatNumber(p.avg_damage_taken, 2) }
+        { key: 'avg_net_worth', label: '场均财产', render: (p) => formatNumber(p.avg_net_worth, 0) },
+        { key: 'avg_hero_damage', label: '英雄伤害', render: (p) => formatNumber(p.avg_hero_damage, 0) },
+        { key: 'avg_tower_damage', label: '建筑伤害', render: (p) => formatNumber(p.avg_tower_damage, 0) }, // Use 0 decimals for damage
+        { key: 'avg_damage_taken', label: '场均承伤', render: (p) => formatNumber(p.avg_damage_taken, 0) }
     ];
 
     const SortIcon = ({ colKey }) => {
@@ -236,7 +263,26 @@ const PlayerList = () => {
                 </table>
             </div>
 
-            {/* Pagination removed as requested - showing all records */}
+            {/* Pagination */}
+            <div className="pagination">
+                <button
+                    className="pagination-btn"
+                    disabled={pagination.page === 1}
+                    onClick={() => handlePageChange(pagination.page - 1)}
+                >
+                    上一页
+                </button>
+                <span className="pagination-info">
+                    第 {pagination.page} 页 / 共 {pagination.totalPages} 页
+                </span>
+                <button
+                    className="pagination-btn"
+                    disabled={pagination.page >= pagination.totalPages}
+                    onClick={() => handlePageChange(pagination.page + 1)}
+                >
+                    下一页
+                </button>
+            </div>
         </div>
     );
 };

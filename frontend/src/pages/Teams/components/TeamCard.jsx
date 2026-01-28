@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { DownOutlined, UpOutlined, TeamOutlined } from '@ant-design/icons';
 
 const TeamCard = ({ team }) => {
@@ -98,7 +98,15 @@ const TeamCard = ({ team }) => {
                                             </div>
                                         )}
                                         <span className={synced ? "player-nickname" : "player-nickname player-nickname-loading"}>
-                                            {synced ? player.nickname : (
+                                            {synced ? (
+                                                <Link
+                                                    to={`/players/${player.player_id}`}
+                                                    state={{ from: '/teams', label: '返回战队列表' }}
+                                                    style={{ textDecoration: 'none', color: 'inherit' }}
+                                                >
+                                                    {player.nickname}
+                                                </Link>
+                                            ) : (
                                                 <>
                                                     加载中<span className="loading-dots"></span>
                                                 </>

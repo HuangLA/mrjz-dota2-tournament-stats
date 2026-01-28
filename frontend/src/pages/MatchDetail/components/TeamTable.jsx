@@ -1,7 +1,7 @@
 import React from 'react';
 import PlayerRow from './PlayerRow';
 
-const TeamTable = ({ team, teamName, players, isWinner }) => {
+const TeamTable = ({ team, teamName, players, isWinner, matchId }) => {
     const [sortConfig, setSortConfig] = React.useState({ key: null, direction: 'desc' });
 
     const requestSort = (key) => {
@@ -72,7 +72,8 @@ const TeamTable = ({ team, teamName, players, isWinner }) => {
                     <HeaderCell label="财产总和" columnKey="net_worth" className="col-nw" />
                     <HeaderCell label="GPM" columnKey="gpm" className="col-gpm" />
                     <HeaderCell label="XPM" columnKey="xpm" className="col-xpm" />
-                    <HeaderCell label="伤害" columnKey="hero_damage" className="col-damage" />
+                    <HeaderCell label="建筑伤害" columnKey="tower_damage" className="col-damage" />
+                    <HeaderCell label="英雄伤害" columnKey="hero_damage" className="col-damage" />
                     <HeaderCell label="承受伤害" columnKey="damage_taken" className="col-damage" />
                     <div className="col-items">装备</div>
                 </div>
@@ -82,6 +83,7 @@ const TeamTable = ({ team, teamName, players, isWinner }) => {
                         key={index}
                         player={player}
                         team={team}
+                        matchId={matchId}
                     />
                 ))}
             </div>

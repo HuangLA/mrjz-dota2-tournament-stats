@@ -208,6 +208,7 @@ const MatchDetail = () => {
                 teamName={match.radiant_team_name || '天辉'}
                 players={radiantPlayers}
                 isWinner={match.radiant_win}
+                matchId={match.match_id}
             />
 
             <TeamTable
@@ -215,6 +216,7 @@ const MatchDetail = () => {
                 teamName={match.dire_team_name || '夜魇'}
                 players={direPlayers}
                 isWinner={!match.radiant_win}
+                matchId={match.match_id}
             />
 
             {achievements.length > 0 && (
