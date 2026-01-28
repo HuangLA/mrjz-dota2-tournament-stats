@@ -161,3 +161,17 @@
     -webkit-overflow-scrolling: touch;
   }
 }
+
+/* AntD Table Empty State Override */
+.match-table .ant-table-placeholder {
+  background: #11161d !important;
+}
+
+.match-table .ant-table-placeholder .ant-table-cell {
+  background: #11161d !important;
+  border-bottom: none !important;
+}
+
+.match-table .ant-table-empty .ant-table-placeholder {
+  background: #11161d !important;
+}

@@ -76,6 +76,11 @@ const MatchPlayer = sequelize.define('MatchPlayer', {
         defaultValue: 0,
         comment: '英雄治疗'
     },
+    damage_taken: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        comment: '承受伤害'
+    },
     // 背包装备
     item_backpack_0: {
         type: DataTypes.INTEGER,
