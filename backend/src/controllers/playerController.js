@@ -54,6 +54,7 @@ class PlayerController {
                     AVG(mp.denies) as avg_denies,
                     AVG(mp.hero_damage) as avg_hero_damage,
                     AVG(mp.damage_taken) as avg_damage_taken,
+                    (SUM(mp.kills) + SUM(mp.assists)) / NULLIF(SUM(mp.deaths), 0) as kda_ratio,
                     SUBSTRING_INDEX(GROUP_CONCAT(NULLIF(CASE WHEN mp.team = 'radiant' THEN m.radiant_team_name ELSE m.dire_team_name END, '') ORDER BY m.start_time DESC SEPARATOR '|||'), '|||', 1) as team_name
                 FROM match_players mp
                 JOIN matches m ON mp.match_id = m.match_id
