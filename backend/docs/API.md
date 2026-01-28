@@ -378,10 +378,11 @@ curl -X POST "http://localhost:3001/api/matches/force-refresh?league_id=17485"
 **查询参数**:
 - `page` (可选): 页码，默认 1
 - `limit` (可选): 每页数量，默认 10
+- `league_id` (可选): 联赛ID过滤
 
 **请求示例**:
 ```bash
-curl "http://localhost:3001/api/players?page=1&limit=10"
+curl "http://localhost:3001/api/players?page=1&limit=10&league_id=18365"
 ```
 
 **响应示例**:
@@ -394,9 +395,18 @@ curl "http://localhost:3001/api/players?page=1&limit=10"
       "steam_id": "76561198123456789",
       "nickname": "PlayerName",
       "avatar_url": "https://...",
-      "total_matches": 15,
-      "total_wins": 9,
-      "avg_kda": 3.5
+      "matches_count": 15,
+      "wins": 9,
+      "win_rate": 60,
+      "avg_kills": "8.5000",
+      "avg_deaths": "4.2000",
+      "avg_assists": "12.3000",
+      "kda_ratio": 4.95,
+      "avg_gpm": "580.0000",
+      "avg_xpm": "650.0000",
+      "avg_hero_damage": "25000.0000",
+      "avg_damage_taken": "30000.0000",
+      "team_name": "Los Angeles Yellow Men"
     }
   ],
   "pagination": {
