@@ -122,10 +122,12 @@ export const HERO_ID_TO_NAME = {
     126: "void_spirit",
     128: "snapfire",
     129: "mars",
+    131: "ringmaster",
     135: "dawnbreaker",
     136: "marci",
     137: "primal_beast",
-    138: "muerta"
+    138: "muerta",
+    145: "kez"
 };
 
 /**

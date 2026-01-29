@@ -156,10 +156,149 @@
     gap: 16px;
   }
 
+  /* Hide table on mobile (if not already handled by JS, but adding this for safety) */
   .match-table {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    display: none;
   }
+}
+
+/* Match Mobile Card Styles */
+.match-list-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.match-card {
+  background: #11161d;
+  border-radius: 8px;
+  border: 1px solid #1c222b;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.match-card:active {
+  background: #161b24;
+  transform: scale(0.98);
+}
+
+.mc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #1c222b;
+}
+
+.mc-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.mc-id {
+  font-family: monospace;
+  color: #6e7989;
+  font-size: 12px;
+}
+
+.mc-time {
+  color: #ebedf2;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.mc-result-badge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.mc-result-badge.radiant {
+  color: #0dc98b;
+  background: rgba(13, 201, 139, 0.1);
+  border: 1px solid rgba(13, 201, 139, 0.2);
+}
+
+.mc-result-badge.dire {
+  color: #ff3a48;
+  background: rgba(255, 58, 72, 0.1);
+  border: 1px solid rgba(255, 58, 72, 0.2);
+}
+
+.mc-teams-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.mc-team {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  max-width: 35%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mc-team.radiant {
+  color: #0dc98b;
+  background: rgba(13, 201, 139, 0.05);
+}
+
+.mc-team.dire {
+  color: #ff3a48;
+  background: rgba(255, 58, 72, 0.05);
+}
+
+.mc-score {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.radiant-score {
+  color: #0dc98b;
+}
+
+.dire-score {
+  color: #ff3a48;
+}
+
+.vs {
+  color: #6e7989;
+  margin: 0 4px;
+  font-size: 14px;
+}
+
+.mc-heroes-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mc-heroes {
+  display: flex;
+  gap: 2px;
+}
+
+.mc-hero-icon {
+  width: 28px;
+  height: 16px;
+  object-fit: cover;
+  border-radius: 2px;
+  background: #000;
+}
+
+.mc-vscode {
+  font-size: 10px;
+  color: #4a515c;
+  font-weight: 700;
 }
 
 /* AntD Table Empty State Override */

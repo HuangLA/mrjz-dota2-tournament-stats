@@ -4,6 +4,7 @@ import { Select } from 'antd';
 import { getPlayers } from '../../api/players';
 import { getHeroIconUrl } from '../../utils/heroUtils';
 import NoData from '../../components/common/NoData';
+import PlayerCard from './PlayerCard';
 import './PlayerList.css';
 
 const { Option } = Select;
@@ -22,7 +23,7 @@ const PlayerList = () => {
 
     // 排序状态（前端排序作为补充，如果需要后端排序可以传参给API）
     // 目前后端已按场次排序，这里主要是在当前页排序
-    const [sortConfig, setSortConfig] = useState({ key: 'total_matches', direction: 'desc' });
+    const [sortConfig, setSortConfig] = useState({ key: 'matches_count', direction: 'desc' });
 
     useEffect(() => {
         fetchPlayers();
@@ -104,6 +105,15 @@ const PlayerList = () => {
         setSelectedLeague(value);
         setPagination(prev => ({ ...prev, page: 1 })); // switch league resets to page 1
     };
+
+    // Media Query for Mobile
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     if (loading && players.length === 0) {
         return (
@@ -206,62 +216,122 @@ const PlayerList = () => {
 
     return (
         <div className="player-list-container">
-            <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="page-header" style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: isMobile ? 'flex-start' : 'center',
+                flexDirection: 'row', // Always row to keep controls in top-right
+            }}>
                 <div>
                     <h1>选手统计</h1>
-                    <div className="page-subtitle">联赛所有参赛选手数据汇总</div>
+                    <div className="page-subtitle">选手数据汇总</div>
                 </div>
-                <Select
-                    value={selectedLeague}
-                    onChange={handleLeagueChange}
-                    style={{ width: 180 }}
-                >
-                    <Option value={null}>全部联赛</Option>
-                    <Option value={18365}>第二届 (18365)</Option>
-                    <Option value={17485}>第一届 (17485)</Option>
-                </Select>
+                <div className="header-controls" style={{
+                    display: 'flex',
+                    gap: '8px',
+                    alignItems: isMobile ? 'flex-start' : 'center', // Left align controls with each other
+                    flexDirection: isMobile ? 'column' : 'row', // Stack vertically
+                }}>
+                    <Select
+                        value={selectedLeague}
+                        onChange={handleLeagueChange}
+                        style={{ width: isMobile ? 125 : 180 }}
+                        size={isMobile ? 'middle' : 'large'}
+                        placeholder="选择联赛"
+                    >
+                        <Option value={null}>全部联赛</Option>
+                        <Option value={18365}>第二届 (18365)</Option>
+                        <Option value={17485}>第一届 (17485)</Option>
+                    </Select>
+
+                    {isMobile && (
+                        <div style={{ display: 'flex', gap: '8px', width: 'auto' }}>
+                            <Select
+                                value={sortConfig.key}
+                                onChange={(val) => setSortConfig(prev => ({ ...prev, key: val }))}
+                                style={{ width: 125 }}
+                                size="middle"
+                                placeholder="排序方式"
+                            >
+                                <Option value="matches_count">场次</Option>
+                                <Option value="win_rate">胜率</Option>
+                                <Option value="kda_ratio">KDA</Option>
+                                <Option value="avg_kills">场均击杀</Option>
+                                <Option value="avg_deaths">场均死亡</Option>
+                                <Option value="avg_assists">场均助攻</Option>
+                                <Option value="avg_gpm">GPM</Option>
+                                <Option value="avg_xpm">XPM</Option>
+                                <Option value="avg_net_worth">场均财产</Option>
+                                <Option value="avg_hero_damage">英雄伤害</Option>
+                                <Option value="avg_tower_damage">建筑伤害</Option>
+                                <Option value="avg_damage_taken">场均承伤</Option>
+                            </Select>
+                            <button
+                                onClick={() => handleSort(sortConfig.key)}
+                                className="pagination-btn"
+                                style={{ padding: '4px 12px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                            >
+                                {sortConfig.direction === 'asc' ? '↑' : '↓'}
+                            </button>
+                        </div>
+                    )}
+                </div>
             </div>
 
-            <div className="players-table-container">
-                <table className="players-table">
-                    <thead>
-                        <tr>
-                            <th onClick={() => handleSort('row_number')} style={{ width: '60px' }}>#</th>
-                            {columns.map(col => (
-                                <th
-                                    key={col.key}
-                                    onClick={() => handleSort(col.key)}
-                                    className={sortConfig.key === col.key ? 'sorted' : ''}
-                                    style={{ textAlign: col.align || 'left' }}
-                                >
-                                    {col.label}
-                                    <SortIcon colKey={col.key} />
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {sortedPlayers.length > 0 ? (
-                            sortedPlayers.map((player, index) => (
-                                <tr key={player.player_id}>
-                                    <td className="stat-cell">{(pagination.page - 1) * pagination.limit + index + 1}</td>
-                                    {columns.map(col => (
-                                        <td key={col.key} className={`stat-cell ${col.key === 'nickname' ? '' : ''}`} style={{ textAlign: col.align || 'left' }}>
-                                            {col.render ? col.render(player) : formatNumber(player[col.key], 1)}
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))
-                        ) : (
+            {isMobile ? (
+                // Mobile Card View
+                <div className="players-card-grid">
+                    {sortedPlayers.length > 0 ? (
+                        sortedPlayers.map((player) => (
+                            <PlayerCard key={player.player_id} player={player} />
+                        ))
+                    ) : (
+                        <NoData message="暂无选手数据" />
+                    )}
+                </div>
+            ) : (
+                // Desktop Table View
+                <div className="players-table-container">
+                    <table className="players-table">
+                        <thead>
                             <tr>
-                                <td colSpan={columns.length + 1} style={{ padding: 0 }}>
-                                    <NoData message="暂无选手数据" />
-                                </td>
+                                <th onClick={() => handleSort('row_number')} style={{ width: '60px' }}>#</th>
+                                {columns.map(col => (
+                                    <th
+                                        key={col.key}
+                                        onClick={() => handleSort(col.key)}
+                                        className={sortConfig.key === col.key ? 'sorted' : ''}
+                                        style={{ textAlign: col.align || 'left' }}
+                                    >
+                                        {col.label}
+                                        <SortIcon colKey={col.key} />
+                                    </th>
+                                ))}
                             </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {sortedPlayers.length > 0 ? (
+                                sortedPlayers.map((player, index) => (
+                                    <tr key={player.player_id}>
+                                        <td className="stat-cell">{(pagination.page - 1) * pagination.limit + index + 1}</td>
+                                        {columns.map(col => (
+                                            <td key={col.key} className={`stat-cell ${col.key === 'nickname' ? '' : ''}`} style={{ textAlign: col.align || 'left' }}>
+                                                {col.render ? col.render(player) : formatNumber(player[col.key], 1)}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={columns.length + 1} style={{ padding: 0 }}>
+                                        <NoData message="暂无选手数据" />
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            )}
 
             {/* Pagination */}
             <div className="pagination">

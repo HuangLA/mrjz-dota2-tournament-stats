@@ -8,6 +8,8 @@ import { HERO_ID_TO_NAME } from './heroMapping';
 export const getHeroAvatarUrl = (heroId) => {
     const heroName = HERO_ID_TO_NAME[heroId];
     if (!heroName) {
+        // Fallback to antimage if really unknown, as per original logic.
+        // User requested NOT to use Stratz.
         return 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/antimage.png';
     }
     return `https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/${heroName}.png`;

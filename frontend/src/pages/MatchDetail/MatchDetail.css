@@ -192,14 +192,20 @@
 
 /* Player Row */
 .player-row {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid #1c222b;
+    transition: background 0.2s;
+}
+
+.player-row-main {
     display: grid;
     grid-template-columns: 90px 180px 110px 65px 90px 65px 65px 110px 110px 110px 200px;
     /* hero player kda lh/d nw(+space) gpm xpm tower hero taken items */
     gap: 12px;
     padding: 12px 16px;
     align-items: center;
-    border-bottom: 1px solid #1c222b;
-    transition: background 0.2s;
+    width: 100%;
 }
 
 .player-row:hover {
@@ -400,81 +406,504 @@
 }
 
 
-/* Mobile Responsiveness */
+/* Mobile Responsiveness for MatchDetail */
 @media (max-width: 768px) {
     .match-detail-container {
+        padding: 0;
+    }
+
+    /* Top Actions Mobile */
+    .match-top-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px;
+        background: #11161d;
+        border-bottom: 1px solid #1c222b;
+    }
+
+    .back-button {
+        margin-bottom: 0 !important;
+    }
+
+    .refresh-text {
+        display: none;
+    }
+
+    .mobile-compact-alert {
+        flex: 1;
+        margin: 0 8px;
+        padding: 4px 8px;
+    }
+
+    .mobile-compact-alert .ant-alert-message {
+        font-size: 12px;
+    }
+
+    /* MATCH HEADER MOBILE - Single Row Compact */
+    .match-header {
+        border-radius: 0;
+        margin-bottom: 0;
         padding: 16px;
     }
 
-    /* Header Adjustments */
-    .match-header {
-        padding: 20px;
-    }
-
-    .match-header-teams {
-        flex-direction: column;
-        gap: 24px;
-    }
-
-    .match-score {
-        font-size: 36px;
-        order: 2;
-        /* Put score between teams if using column, or maybe just keep typical order but stacked? */
-        /* Actually, usually mobile expects Team A vs Team B. Let's keep order but stack them if they don't fit? */
-        /* Better yet: keep row but allow wrapping. */
-        flex-direction: row;
-    }
-
-    /* Better Mobile Header Layout: Stack Teams Vertical or Keep Row with small font */
-    /* Let's try 3-row stack for very small screens */
-    .match-header-teams {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .team-info {
-        flex-direction: row;
-        justify-content: center;
-        order: 1;
-        /* Radiant on top */
-    }
-
-    .team-info.dire {
-        order: 3;
-        /* Dire on bottom */
-    }
-
-    .match-score {
-        order: 2;
-        /* Score in middle */
-        margin: 10px 0;
+    .match-info h1 {
+        font-size: 14px;
+        /* Significantly reduced */
+        margin-bottom: 8px;
+        color: #8a93a0;
+        /* Dimmed */
     }
 
     .match-meta {
-        flex-direction: column;
-        gap: 8px;
-        align-items: flex-start;
+        display: none;
+        /* Hide extra meta on mobile to save space */
     }
 
-    /* Table Scroll */
+    .match-header-teams {
+        flex-direction: row;
+        gap: 8px;
+        align-items: flex-start;
+        /* Top align to keep names/score in line */
+        justify-content: space-between;
+        margin-bottom: 10px;
+        position: relative;
+    }
+
+    .match-detail-container .team-info {
+        flex: 1;
+        width: auto;
+        flex-direction: column;
+        justify-content: flex-start;
+        /* Start from top */
+        align-items: center;
+        gap: 2px;
+        position: relative;
+    }
+
+    .match-detail-container .team-info.radiant {
+        order: 1 !important;
+    }
+
+    .match-detail-container .team-info.dire {
+        order: 3 !important;
+    }
+
+    .match-detail-container .team-info .team-name {
+        font-size: 18px !important;
+        /* Equal size to score */
+        line-height: 1.2 !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        max-width: 110px !important;
+        color: #ebedf2 !important;
+        height: 22px !important;
+        /* Fixed height for alignment */
+    }
+
+    .match-detail-container .winner-badge {
+        font-size: 10px;
+        padding: 0 4px;
+        position: static;
+        margin-top: 2px;
+        transform: none;
+        white-space: nowrap;
+        background: rgba(13, 201, 139, 0.2);
+        color: #0dc98b;
+        border: 1px solid rgba(13, 201, 139, 0.4);
+        border-radius: 4px;
+        line-height: 1.4;
+    }
+
+    .match-score {
+        order: 2;
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 18px;
+        /* Equal size to name */
+        line-height: 1.2;
+        /* Match name line-height */
+        height: 22px;
+        /* Match name height */
+        padding: 0 4px;
+        background: transparent;
+        width: auto;
+        margin-top: 0;
+        /* Alignment fix */
+    }
+
+    /* TEAM TABLE MOBILE - Card Style */
     .team-table {
-        padding: 12px;
+        margin: 12px 16px;
+        /* Card margin */
+        border-radius: 8px;
+        /* Rounded corners */
+        border: 1px solid #1c222b;
+        /* Subtle border */
+        overflow: hidden;
+        padding: 0;
+        background: #11161d;
+    }
+
+    .team-table.radiant .team-table-header {
+        background: rgba(13, 201, 139, 0.1);
+        border-left: 4px solid #0dc98b;
+    }
+
+    .team-table.dire .team-table-header {
+        background: rgba(255, 58, 72, 0.1);
+        border-left: 4px solid #ff3a48;
+    }
+
+    .team-table-header {
+        padding: 8px 12px;
+        justify-content: flex-start;
+        border-bottom: 1px solid #1c222b;
+    }
+
+    .team-title {
+        font-size: 14px;
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .winner-badge {
+        font-size: 10px;
+        padding: 2px 6px;
+    }
+
+    /* Hide Desktop Header Row */
+    .table-header-row {
+        display: none;
     }
 
     .team-table-content {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+        overflow-x: visible;
     }
 
-    /* Ensure rows are wide enough to not keysmash */
-    .table-header-row,
+    /* PLAYER ROW MOBILE */
     .player-row {
-        min-width: 800px;
-        /* Force minimum width to trigger scroll */
+        min-width: 0;
+        flex-direction: column;
+        padding: 0;
+        border-bottom: 1px solid #1c222b;
+        background: transparent;
     }
 
-    /* Achievement Grid */
-    .achievement-list {
-        grid-template-columns: 1fr;
+    /* REVISED LAYOUT FOR .player-row-main MOBILE (Iter 6 - High Specificity Fix):
+       Grid: [Hero] [Name] [KDA+Ratio] [Items+Neutral]
+    */
+    .match-detail-container .player-row-main {
+        display: grid !important;
+        grid-template-columns: 42px 1fr 75px auto !important;
+        gap: 2px !important;
+        align-items: center !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        padding: 6px 2px !important;
+        position: relative !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+
+    /* Hide Desktop Columns AND col-lhd */
+    .match-detail-container .desktop-stat,
+    .match-detail-container .col-nw,
+    .match-detail-container .col-gpm,
+    .match-detail-container .col-xpm,
+    .match-detail-container .col-damage,
+    .match-detail-container .col-lhd {
+        display: none !important;
+    }
+
+    /* 1. Hero */
+    .match-detail-container .col-hero {
+        grid-column: 1 !important;
+        flex: 0 0 40px !important;
+        display: flex !important;
+        justify-content: center !important;
+        margin-right: 0 !important;
+    }
+
+    .match-detail-container .hero-avatar {
+        width: 40px !important;
+        height: 23px !important;
+        box-shadow: none !important;
+    }
+
+    .match-detail-container .hero-avatar img {
+        width: 40px !important;
+        height: 23px !important;
+        border-radius: 2px !important;
+        object-fit: cover !important;
+    }
+
+    /* 2. Player Info */
+    .match-detail-container .col-player {
+        grid-column: 2 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: flex-start !important;
+        /* Fix Hitbox: Don't stretch */
+        overflow: hidden !important;
+        min-width: 0 !important;
+        padding-left: 4px !important;
+    }
+
+    .match-detail-container .player-info {
+        max-width: 100% !important;
+        width: fit-content !important;
+        /* Fix Hitbox: Hug content */
+        display: flex !important;
+        align-items: center !important;
+        gap: 0 !important;
+    }
+
+    .match-detail-container .player-avatar {
+        display: none !important;
+    }
+
+    .match-detail-container .player-name {
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        line-height: 1.2 !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        display: block !important;
+        color: #ebedf2 !important;
+    }
+
+    /* 3. KDA */
+    .match-detail-container .col-kda {
+        grid-column: 3 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: flex-end !important;
+        padding-right: 4px !important;
+        min-width: 70px !important;
+    }
+
+    .match-detail-container .kda-text {
+        font-size: 13px !important;
+        font-family: 'Roboto Mono', monospace !important;
+        color: #ebedf2 !important;
+        font-weight: 700 !important;
+        text-align: right !important;
+        white-space: nowrap !important;
+        line-height: 1.1 !important;
+    }
+
+    .match-detail-container .kda-ratio {
+        display: block !important;
+        font-size: 10px !important;
+        color: #8a93a0 !important;
+        font-family: 'Roboto Mono', monospace !important;
+        text-align: right !important;
+        line-height: 1.1 !important;
+    }
+
+    /* 4. Items (Main + Neutral) - CRITICAL FIX */
+    .match-detail-container .col-items {
+        grid-column: 4 !important;
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        padding: 0 !important;
+        width: auto !important;
+    }
+
+    .match-detail-container .items-container {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 4px !important;
+        flex-wrap: nowrap !important;
+    }
+
+    .match-detail-container .items-left {
+        display: flex !important;
+        flex-direction: column !important;
+        /* Reset to column for main items */
+        gap: 1px !important;
+    }
+
+    .match-detail-container .items-main-grid {
+        display: grid !important;
+        grid-template-columns: repeat(3, 22px) !important;
+        gap: 1px !important;
+    }
+
+    .match-detail-container .items-backpack-row {
+        display: none !important;
+        grid-template-columns: repeat(3, 22px) !important;
+        gap: 1px !important;
+    }
+
+    .player-row.expanded .items-backpack-row {
+        display: grid !important;
+    }
+
+    .match-detail-container .items-right {
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .match-detail-container .item-neutral {
+        width: 20px !important;
+        height: 20px !important;
+        border-radius: 50% !important;
+        overflow: hidden !important;
+        border: 1px solid #333 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .match-detail-container .item-neutral img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+    }
+
+    .match-detail-container .item-slot {
+        width: 22px !important;
+        height: 16px !important;
+        border-radius: 1px !important;
+        background: #0b0e14 !important;
+        overflow: hidden !important;
+        border: none !important;
+    }
+
+    .match-detail-container .item-icon {
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 0 !important;
+    }
+
+    /* Expanded Content - Specificity boost too */
+    .match-detail-container .player-row.expanded {
+        background: #161b24 !important;
+        border-left: 2px solid #33dba8 !important;
+    }
+
+    .match-detail-container .player-row-expanded {
+        padding: 0 12px 12px 12px !important;
+        border-top: 1px dashed #2c3545 !important;
+        animation: slideDown 0.2s ease-out !important;
+    }
+
+    .match-detail-container .expanded-stat-grid {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 12px !important;
+        padding-top: 12px !important;
+    }
+
+    .match-detail-container .exp-stat-item {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 2px !important;
+    }
+
+    .match-detail-container .exp-stat-item .label {
+        font-size: 10px !important;
+        color: #8a93a0 !important;
+    }
+
+    .match-detail-container .exp-stat-item .value {
+        font-size: 13px !important;
+        color: #ebedf2 !important;
+    }
+
+    .match-detail-container .exp-stat-item .value.gold {
+        color: #e2d04a !important;
+    }
+
+    /* Achievements - High Specificity Fix */
+    .match-detail-container .achievement-list {
+        padding: 0 4px !important;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)) !important;
+        /* Dynamic Wrap */
+        gap: 4px !important;
+    }
+
+    .match-detail-container .achievement-item {
+        display: grid !important;
+        grid-template-columns: auto 1fr !important;
+        /* [Icon] [Name] */
+        grid-template-rows: auto auto !important;
+        /* Row 1, Row 2 */
+        align-items: center !important;
+        padding: 6px 4px !important;
+        gap: 2px 4px !important;
+        text-align: left !important;
+    }
+
+    /* Icon: Row 1 Col 1 */
+    .match-detail-container .achievement-icon {
+        grid-row: 1 !important;
+        grid-column: 1 !important;
+        font-size: 14px !important;
+        /* Tiny icon */
+        margin: 0 !important;
+        line-height: 1 !important;
+    }
+
+    /* Unwrap Content Wrapper */
+    .match-detail-container .achievement-content {
+        display: contents !important;
+    }
+
+    /* Name: Row 1 Col 2 */
+    .match-detail-container .achievement-name {
+        grid-row: 1 !important;
+        grid-column: 2 !important;
+        font-size: 11px !important;
+        margin: 0 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        max-width: 100% !important;
+        line-height: 1.2 !important;
+    }
+
+    /* Player: Row 2 Span 2 */
+    .match-detail-container .achievement-player {
+        grid-row: 2 !important;
+        grid-column: 1 / -1 !important;
+        margin-top: 2px !important;
+        justify-content: flex-start !important;
+        /* Left align under grouped header */
+        gap: 4px !important;
+        display: flex !important;
+        align-items: center !important;
+        width: 100% !important;
+        background: rgba(255, 255, 255, 0.03) !important;
+        /* Subtle separate bg */
+        border-radius: 2px !important;
+        padding: 1px 4px !important;
+    }
+
+    .match-detail-container .achievement-player-avatar {
+        width: 14px !important;
+        height: 14px !important;
+    }
+
+    .match-detail-container .achievement-player-name {
+        font-size: 10px !important;
+        color: #8a93a0 !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
     }
 }

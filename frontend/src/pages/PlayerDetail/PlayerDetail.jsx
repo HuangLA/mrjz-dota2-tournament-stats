@@ -76,6 +76,14 @@ const PlayerDetail = () => {
         });
     };
 
+    // Mobile check
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     if (loading) {
         return (
             <div className="player-detail-container">
@@ -98,29 +106,6 @@ const PlayerDetail = () => {
     }
 
     const { player, matchStats, signatureHeroes } = playerData;
-
-    // Check if user has team (from last match or DB if available)
-    // For now we might not have 'team_name' in 'player' object unless backend sends it.
-    // Assuming backend 'player' object is plain. We might rely on stats or matches to find team name.
-
-    // Calculate Win Rate
-    const winRate = matchStats.total_games > 0
-        ? ((playerData.signatureHeroes?.reduce((acc, h) => acc + parseInt(h.wins), 0) / playerData.signatureHeroes?.reduce((acc, h) => acc + parseInt(h.matches_count), 0)) * 100)
-        // Wait, matchStats usually has win count? No, in getPlayerStats we removed it from simple stats... 
-        // Let's use the one from api
-        : 0;
-
-    // Actually, matchStats in controller didn't aggregate wins for the whole player, just Avg KDA etc.
-    // We can estimate or fetch from list logic. 
-    // OR we can rely on `signatureHeroes` sum? No, that's top 3.
-    // Let's check `matchStats` structure again.
-    // in controller: `matchStats` has avg_kills, etc. No wins count.
-    // We might need to rely on what we have or update backend. 
-    // BUT! `signatureHeroes` has wins/matches for top heroes. 
-    // For general winrate, we can calc from matches list or request backend update.
-    // Since we didn't update backend for `total_wins`, let's just show stats we have and maybe skip overall winrate if not available, OR calc from match history (incomplete).
-    // Wait, `getPlayers` (list) has winrate. `getPlayerStats` does not. 
-    // Let's just use what we have. KDA IS available.
 
     const kda = ((parseFloat(matchStats.avg_kills) + parseFloat(matchStats.avg_assists)) / parseFloat(matchStats.avg_deaths || 1)).toFixed(2);
 
@@ -154,7 +139,7 @@ const PlayerDetail = () => {
             }
         },
         {
-            title: 'K/D/A', // KDA
+            title: 'K/D/A',
             key: 'kda',
             render: (_, record) => `${record.kills}/${record.deaths}/${record.assists}`
         },
@@ -174,7 +159,7 @@ const PlayerDetail = () => {
             title: '时间',
             dataIndex: ['Match', 'start_time'],
             key: 'time',
-            render: (text) => new Date(text * 1000).toLocaleDateString()
+            render: (text) => text ? new Date(text * 1000).toLocaleDateString() : '-'
         }
     ];
 
@@ -255,23 +240,83 @@ const PlayerDetail = () => {
             {/* Match History */}
             <div className="glass-card">
                 <h3 className="section-title">比赛记录</h3>
-                <Table
-                    columns={columns}
-                    dataSource={matches}
-                    rowKey="id"
-                    loading={matchLoading}
-                    pagination={{
-                        current: pagination.page,
-                        total: pagination.total,
-                        pageSize: pagination.limit,
-                        onChange: (page) => setPagination(p => ({ ...p, page })),
-                        showSizeChanger: false
-                    }}
-                    rowClassName="match-row"
-                    onRow={(record) => ({
-                        onClick: () => navigate(`/matches/${record.match_id}`)
-                    })}
-                />
+                {isMobile ? (
+                    <div className="mobile-history-list">
+                        {matches.map(record => (
+                            <MobileHistoryCard key={record.id} record={record} navigate={navigate} />
+                        ))}
+                        {matches.length === 0 && !matchLoading && <div style={{ textAlign: 'center', padding: 20, color: '#666' }}>暂无数据</div>}
+                    </div>
+                ) : (
+                    <Table
+                        columns={columns}
+                        dataSource={matches}
+                        rowKey="id"
+                        loading={matchLoading}
+                        pagination={{
+                            current: pagination.page,
+                            total: pagination.total,
+                            pageSize: pagination.limit,
+                            onChange: (page) => setPagination(p => ({ ...p, page })),
+                            showSizeChanger: false
+                        }}
+                        rowClassName="match-row"
+                        onRow={(record) => ({
+                            onClick: () => navigate(`/matches/${record.match_id}`)
+                        })}
+                    />
+                )}
+            </div>
+        </div>
+    );
+};
+
+// Sub-component moved outside to prevent re-creation on every render
+const MobileHistoryCard = ({ record, navigate }) => {
+    const isRadiant = record.team === 'radiant';
+    const radiantWin = record.Match?.radiant_win;
+    const isWin = (isRadiant && radiantWin) || (!isRadiant && !radiantWin);
+    // Safety check for date
+    const date = record.Match?.start_time
+        ? new Date(record.Match.start_time * 1000).toLocaleDateString()
+        : '-';
+
+    return (
+        <div
+            className={`mobile-history-card ${isWin ? 'win-border' : 'loss-border'}`}
+            onClick={() => navigate(`/matches/${record.match_id}`)}
+        >
+            <div className="mhc-header">
+                <span className="mhc-id">{record.match_id}</span>
+                <span className="mhc-date">{date}</span>
+                <span className={`mhc-result ${isWin ? 'win' : 'loss'}`}>
+                    {isWin ? '胜利' : '失败'}
+                </span>
+            </div>
+            <div className="mhc-body">
+                <div className="mhc-hero">
+                    <img
+                        src={getHeroIconUrl(record.hero_id)}
+                        alt={`Hero ${record.hero_id}`}
+                        className="mhc-hero-img"
+                    />
+                </div>
+                <div className="mhc-stats">
+                    <div className="mhc-kda">
+                        <span className="label">KDA</span>
+                        <span className="value">{record.kills}/{record.deaths}/{record.assists}</span>
+                    </div>
+                    <div className="mhc-damage">
+                        <div className="d-item">
+                            <span className="label">英雄伤害</span>
+                            <span className="value">{record.hero_damage?.toLocaleString()}</span>
+                        </div>
+                        <div className="d-item">
+                            <span className="label">建筑伤害</span>
+                            <span className="value">{record.tower_damage?.toLocaleString()}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

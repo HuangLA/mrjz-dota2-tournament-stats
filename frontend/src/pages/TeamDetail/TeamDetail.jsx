@@ -13,9 +13,11 @@ const TeamDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
     const [team, setTeam] = useState(null);
     const [matches, setMatches] = useState([]);
-    const [selectedLeague, setSelectedLeague] = useState(null); // 默认显示全部联赛
+    // const [selectedLeague, setSelectedLeague] = useState(null); // Removed
     const [membersExpanded, setMembersExpanded] = useState(true);
     const [logoError, setLogoError] = useState(false);
     const [pagination, setPagination] = useState({
@@ -25,14 +27,21 @@ const TeamDetail = () => {
     });
 
     useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    useEffect(() => {
         loadTeamData();
-    }, [id, selectedLeague]);
+    }, [id]); // Removed selectedLeague dependency
 
     const loadTeamData = async (page = 1, pageSize = 20) => {
         setLoading(true);
-        setLogoError(false); // 重置 logo 错误状态
+        setLogoError(false);
         try {
-            const response = await getTeamMatches(id, page, pageSize, selectedLeague);
+            // Always pass null for league to get all
+            const response = await getTeamMatches(id, page, pageSize, null);
             if (response.success) {
                 setTeam(response.data.team);
                 setMatches(response.data.matches);
@@ -50,10 +59,7 @@ const TeamDetail = () => {
         }
     };
 
-    const handleLeagueChange = (value) => {
-        setSelectedLeague(value);
-        setPagination({ ...pagination, current: 1 });
-    };
+    // Removed handleLeagueChange
 
     const handleTableChange = (newPagination) => {
         loadTeamData(newPagination.current, newPagination.pageSize);
@@ -119,6 +125,38 @@ const TeamDetail = () => {
         },
     ];
 
+    const renderMobileMatchList = () => (
+        <div className="mobile-match-list">
+            {matches.map(match => (
+                <div key={match.match_id} className="mobile-match-card" onClick={() => handleMatchClick(match.match_id)}>
+                    <div className="mm-header">
+                        <span className="mm-id">ID: {match.match_id}</span>
+                        <span className="mm-time">{formatTime(match.start_time)}</span>
+                    </div>
+                    <div className="mm-body">
+                        <div className="mm-opponent">
+                            <span className="label">VS</span>
+                            <span className="value">{match.opponent_name}</span>
+                        </div>
+                        <div className={`mm-result ${match.is_win ? 'win' : 'loss'}`}>
+                            {match.is_win ? '胜利' : '失败'}
+                        </div>
+                    </div>
+                    <div className="mm-footer">
+                        <span className="mm-mode">{GAME_MODES[match.game_mode] || `模式 ${match.game_mode}`}</span>
+                        <span className="mm-duration">{formatDuration(match.duration)}</span>
+                    </div>
+                </div>
+            ))}
+            {/* Pagination for mobile could be simple Prev/Next buttons or infinite scroll, 
+                but for now reusing Antd pagination simplified or just keeping standard pagination below if needed.
+                Actually, simpler to just put standard Pagination component below list. */}
+            <div className="mobile-pagination" style={{ marginTop: 16, textAlign: 'center' }}>
+                {/* Reusing Table pagination logic manually if strict needed, but for now simple page info */}
+            </div>
+        </div>
+    );
+
     if (loading) {
         return (
             <div className="team-detail-container">
@@ -170,15 +208,7 @@ const TeamDetail = () => {
                         </div>
                     </div>
                 </div>
-                <Select
-                    value={selectedLeague}
-                    onChange={handleLeagueChange}
-                    style={{ width: 180 }}
-                >
-                    <Option value={null}>全部联赛</Option>
-                    <Option value={18365}>第二届 (18365)</Option>
-                    <Option value={17485}>第一届 (17485)</Option>
-                </Select>
+                {/* Removed League Select */}
             </div>
 
             {/* 成员列表 */}
@@ -216,25 +246,29 @@ const TeamDetail = () => {
             {/* 比赛记录 */}
             <div className="matches-section">
                 <h2>比赛记录</h2>
-                <Table
-                    columns={columns}
-                    dataSource={matches}
-                    rowKey="match_id"
-                    loading={loading}
-                    pagination={{
-                        current: pagination.current,
-                        pageSize: pagination.pageSize,
-                        total: pagination.total,
-                        showSizeChanger: true,
-                        showQuickJumper: true,
-                        showTotal: (total) => `共 ${total} 场比赛`,
-                        pageSizeOptions: ['10', '20', '50'],
-                        onChange: (page, pageSize) => {
-                            loadTeamData(page, pageSize);
-                        },
-                    }}
-                    onChange={handleTableChange}
-                />
+                {isMobile ? (
+                    renderMobileMatchList()
+                ) : (
+                    <Table
+                        columns={columns}
+                        dataSource={matches}
+                        rowKey="match_id"
+                        loading={loading}
+                        pagination={{
+                            current: pagination.current,
+                            pageSize: pagination.pageSize,
+                            total: pagination.total,
+                            showSizeChanger: true,
+                            showQuickJumper: true,
+                            showTotal: (total) => `共 ${total} 场比赛`,
+                            pageSizeOptions: ['10', '20', '50'],
+                            onChange: (page, pageSize) => {
+                                loadTeamData(page, pageSize);
+                            },
+                        }}
+                        onChange={handleTableChange}
+                    />
+                )}
             </div>
         </div>
     );
