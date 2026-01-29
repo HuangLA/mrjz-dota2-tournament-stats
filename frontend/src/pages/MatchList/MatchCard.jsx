@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatTime, formatDuration } from '../../utils/format';
-import { getHeroIconUrl } from '../../utils/heroMapping';
+import { getHeroAvatarUrl } from '../../utils/heroUtils';
 import './MatchList.css';
 
 const MatchCard = ({ match }) => {
@@ -59,7 +59,7 @@ const MatchCard = ({ match }) => {
                     {radiantHeroes.map((heroId, idx) => (
                         <img
                             key={`r-${idx}`}
-                            src={getHeroIconUrl(heroId)}
+                            src={getHeroAvatarUrl(heroId)}
                             className="mc-hero-icon"
                             alt=""
                         />
@@ -70,7 +70,7 @@ const MatchCard = ({ match }) => {
                     {direHeroes.map((heroId, idx) => (
                         <img
                             key={`d-${idx}`}
-                            src={getHeroIconUrl(heroId)}
+                            src={getHeroAvatarUrl(heroId)}
                             className="mc-hero-icon"
                             alt=""
                         />

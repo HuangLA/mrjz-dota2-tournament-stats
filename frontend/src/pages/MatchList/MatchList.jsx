@@ -6,7 +6,7 @@ import { getMatches } from '../../api/matches';
 import { triggerSync } from '../../api/sync';
 import { formatTime, formatDuration } from '../../utils/format';
 import { GAME_MODES } from '../../utils/constants';
-import { getHeroIconUrl } from '../../utils/heroMapping';
+import { getHeroAvatarUrl } from '../../utils/heroUtils';
 import SyncProgress from '../../components/SyncProgress';
 import NoData from '../../components/common/NoData';
 import MatchCard from './MatchCard';
@@ -179,14 +179,14 @@ const MatchList = () => {
                             <div style={{ display: 'flex', gap: '4px', flex: 1 }}>
                                 {radiantHeroes.map((heroId, idx) => (
                                     <div key={idx} style={{ width: 36, height: 36, borderRadius: '4px', overflow: 'hidden', boxShadow: '0 2px 4px rgba(0,0,0,0.2)', background: '#1c222b' }}>
-                                        <img src={getHeroIconUrl(heroId)} alt={`Hero ${heroId}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.src = '/assets/heroes/antimage.png'; }} />
+                                        <img src={getHeroAvatarUrl(heroId)} alt={`Hero ${heroId}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                     </div>
                                 ))}
                             </div>
                             <div style={{ display: 'flex', gap: '4px', flex: 1, justifyContent: 'flex-end' }}>
                                 {direHeroes.map((heroId, idx) => (
                                     <div key={idx} style={{ width: 36, height: 36, borderRadius: '4px', overflow: 'hidden', boxShadow: '0 2px 4px rgba(0,0,0,0.2)', background: '#1c222b' }}>
-                                        <img src={getHeroIconUrl(heroId)} alt={`Hero ${heroId}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.src = '/assets/heroes/antimage.png'; }} />
+                                        <img src={getHeroAvatarUrl(heroId)} alt={`Hero ${heroId}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                     </div>
                                 ))}
                             </div>

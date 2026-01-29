@@ -23,7 +23,7 @@ const PlayerList = () => {
 
     // 排序状态（前端排序作为补充，如果需要后端排序可以传参给API）
     // 目前后端已按场次排序，这里主要是在当前页排序
-    const [sortConfig, setSortConfig] = useState({ key: 'total_matches', direction: 'desc' });
+    const [sortConfig, setSortConfig] = useState({ key: 'matches_count', direction: 'desc' });
 
     useEffect(() => {
         fetchPlayers();
