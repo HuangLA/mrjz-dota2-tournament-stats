@@ -1,10 +1,12 @@
 /* 列间距调整 - 在特定列之间增加额外空间 */
-.col-nw {
-    margin-right: 16px;
-    /* 净值和GPM之间增加更多空间 */
-}
+@media (min-width: 769px) {
+    .col-nw {
+        margin-right: 16px;
+        /* 净值和GPM之间增加更多空间 */
+    }
 
-.col-damage {
-    margin-right: 20px;
-    /* 伤害和装备之间增加更多空间 */
+    .col-damage {
+        margin-right: 20px;
+        /* 伤害和装备之间增加更多空间 */
+    }
 }

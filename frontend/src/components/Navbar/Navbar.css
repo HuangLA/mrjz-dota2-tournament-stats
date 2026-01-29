@@ -71,22 +71,64 @@
     border-radius: 3px 3px 0 0;
 }
 
+
+/* Mobile styles */
+.mobile-menu-btn {
+    display: none;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
     .navbar-container {
-        padding: 0 24px;
+        padding: 0 16px;
+        /* Matches mobile padding plan */
     }
 
     .navbar-brand {
         font-size: 20px;
     }
 
-    .navbar-links {
-        gap: 16px;
+    /* Hide desktop links */
+    .desktop-only {
+        display: none !important;
     }
 
-    .nav-link {
-        font-size: 14px;
-        padding: 6px 12px;
+    /* Show mobile menu button */
+    .mobile-menu-btn {
+        display: block;
     }
+}
+
+/* Drawer Customization */
+.mobile-drawer .ant-drawer-title {
+    color: #ebedf2 !important;
+}
+
+.mobile-drawer .ant-drawer-close {
+    color: #8a93a0 !important;
+}
+
+.mobile-drawer .ant-drawer-close:hover {
+    color: #ebedf2 !important;
+}
+
+.mobile-drawer .ant-menu-item {
+    margin: 4px 0 !important;
+    border-radius: 0 !important;
+    color: #8a93a0 !important;
+}
+
+.mobile-drawer .ant-menu-item-selected {
+    background-color: rgba(51, 219, 168, 0.1) !important;
+    color: #33dba8 !important;
+}
+
+.mobile-drawer .ant-menu-item:hover {
+    color: #ebedf2 !important;
+}
+
+.mobile-drawer .ant-menu-item a {
+    color: inherit !important;
+    font-size: 16px;
+    font-weight: 600;
 }

@@ -139,25 +139,24 @@ const MatchDetail = () => {
 
     return (
         <div className="match-detail-container">
-            <Button
-                icon={<ArrowLeftOutlined />}
-                onClick={() => navigate('/matches')}
-                className="back-button"
-            >
-                返回列表
-            </Button>
+            <div className="match-top-actions">
+                <Button
+                    icon={<ArrowLeftOutlined />}
+                    onClick={() => navigate('/matches')}
+                    className="back-button"
+                >
+                    返回列表
+                </Button>
 
-            {/* 解析状态提示和操作按钮 */}
-            {!match.is_parsed && (
-                <Alert
-                    message="比赛数据未完全解析"
-                    description="此比赛尚未完全解析，部分成就数据可能不可用。您可以请求OpenDota解析此比赛。"
-                    type="warning"
-                    showIcon
-                    style={{ marginBottom: 16 }}
-                    action={
-                        <div style={{ display: 'flex', gap: 8 }}>
-                            {!match.parse_requested ? (
+                {/* 解析状态提示 */}
+                {!match.is_parsed && (
+                    <Alert
+                        message="未完全解析"
+                        type="warning"
+                        showIcon
+                        className="mobile-compact-alert"
+                        action={
+                            !match.parse_requested ? (
                                 <Button
                                     size="small"
                                     type="primary"
@@ -165,41 +164,24 @@ const MatchDetail = () => {
                                     loading={isRequestingParse}
                                     onClick={handleRequestParse}
                                 >
-                                    请求解析
+                                    解析
                                 </Button>
                             ) : (
-                                <Button
-                                    size="small"
-                                    disabled
-                                >
-                                    解析中...
-                                </Button>
-                            )}
-                            <Button
-                                size="small"
-                                icon={<ReloadOutlined />}
-                                loading={isRefreshing}
-                                onClick={handleRefresh}
-                            >
-                                刷新数据
-                            </Button>
-                        </div>
-                    }
-                />
-            )}
+                                <Button size="small" disabled>解析中</Button>
+                            )
+                        }
+                    />
+                )}
 
-            {/* 已解析的比赛也显示刷新按钮 */}
-            {match.is_parsed && (
-                <div style={{ marginBottom: 16, textAlign: 'right' }}>
-                    <Button
-                        icon={<ReloadOutlined />}
-                        loading={isRefreshing}
-                        onClick={handleRefresh}
-                    >
-                        刷新数据
-                    </Button>
-                </div>
-            )}
+                <Button
+                    icon={<ReloadOutlined />}
+                    loading={isRefreshing}
+                    onClick={handleRefresh}
+                    className="refresh-button"
+                >
+                    <span className="refresh-text">刷新数据</span>
+                </Button>
+            </div>
 
             <MatchHeader match={match} />
 

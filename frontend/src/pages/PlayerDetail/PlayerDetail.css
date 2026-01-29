@@ -221,3 +221,152 @@
 .match-result.loss {
     color: #ff5252;
 }
+
+/* Mobile Responsiveness for PlayerDetail */
+@media (max-width: 768px) {
+    .player-detail-container {
+        padding: 16px;
+    }
+
+    .glass-card {
+        padding: 16px;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .profile-avatar-wrapper {
+        width: 100px;
+        height: 100px;
+    }
+
+    .profile-info {
+        width: 100%;
+        text-align: center;
+    }
+
+    .profile-name-row {
+        justify-content: center;
+    }
+
+    .profile-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .stat-value {
+        font-size: 16px;
+    }
+
+    /* Mobile History Card Styles */
+    .mobile-history-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .mobile-history-card {
+        background: #11161d;
+        border: 1px solid #1c222b;
+        border-radius: 8px;
+        padding: 12px;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .mobile-history-card:active {
+        background: #161b24;
+        transform: scale(0.98);
+    }
+
+    .mobile-history-card.win-border {
+        border-left: 4px solid #0dc98b;
+    }
+
+    .mobile-history-card.loss-border {
+        border-left: 4px solid #ff3a48;
+    }
+
+    .mhc-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 12px;
+    }
+
+    .mhc-date {
+        color: #6e7989;
+    }
+
+    .mhc-result {
+        font-weight: 700;
+    }
+
+    .mhc-result.win {
+        color: #0dc98b;
+    }
+
+    .mhc-result.loss {
+        color: #ff3a48;
+    }
+
+    .mhc-body {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+    }
+
+    .mhc-hero .mhc-hero-img {
+        width: 60px;
+        height: 34px;
+        border-radius: 4px;
+        object-fit: cover;
+    }
+
+    .mhc-stats {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .mhc-kda {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .mhc-damage {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-end;
+    }
+
+    .d-item {
+        display: flex;
+        gap: 8px;
+        font-size: 11px;
+    }
+
+    .d-item .label {
+        color: #6e7989;
+    }
+
+    .d-item .value {
+        color: #ebedf2;
+    }
+
+    .label {
+        color: #6e7989;
+        font-size: 10px;
+        text-transform: uppercase;
+    }
+
+    .value {
+        color: #ebedf2;
+        font-weight: 600;
+    }
+}

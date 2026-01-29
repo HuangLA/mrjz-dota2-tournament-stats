@@ -6,6 +6,66 @@
     margin: 0 auto;
 }
 
+/* Mobile Responsiveness for PlayerList */
+@media (max-width: 768px) {
+    .player-list-container {
+        padding: 16px 12px;
+        /* Reduced padding from 32px 48px */
+    }
+
+    .page-header h1 {
+        font-size: 20px;
+    }
+}
+
+/* Base Styles Update for Alignment */
+.card-primary-stats {
+    display: flex;
+    align-items: center;
+    /* Center Vertically */
+    gap: 12px;
+}
+
+.kda-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    height: 100%;
+}
+
+.kda-group .stat-value {
+    font-size: 14px;
+    /* Unify Font Size */
+    font-weight: 700;
+    line-height: 1.2;
+    color: #ebedf2;
+}
+
+.kda-group .stat-label {
+    font-size: 10px;
+    color: #8a93a0;
+    line-height: 1;
+}
+
+.win-rate-bar-container {
+    width: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.win-rate-text {
+    font-size: 14px;
+    /* Unify Font Size */
+    font-weight: 700;
+    /* Match KDA weight */
+    color: #33dba8;
+    line-height: 1.2;
+}
+
 .page-header {
     margin-bottom: 32px;
 }
@@ -184,6 +244,205 @@
     .players-table td {
         padding: 8px 12px;
     }
+}
+
+/* Mobile Card View Styles */
+.players-card-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.player-card {
+    background: #11161d;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #1c222b;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.player-card:active {
+    background: #161b24;
+}
+
+.player-card.expanded {
+    border-color: #33dba8;
+    background: #161b24;
+}
+
+.card-header {
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.player-identity {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.card-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.identity-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.card-nickname {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ebedf2;
+}
+
+.card-team {
+    font-size: 11px;
+    color: #cfaa3d;
+    background: rgba(207, 170, 61, 0.1);
+    padding: 2px 6px;
+    border-radius: 2px;
+    width: fit-content;
+}
+
+.card-primary-stats {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.stat-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.kda-group .stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.kda-group .stat-label {
+    font-size: 10px;
+    color: #8a93a0;
+}
+
+.win-rate-bar-container {
+    width: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+}
+
+.win-rate-text {
+    font-size: 10px;
+    color: #33dba8;
+}
+
+.progress-bg {
+    width: 100%;
+    height: 4px;
+    background: #232730;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 2px;
+}
+
+.expand-icon {
+    margin-left: 8px;
+    color: #586372;
+    font-size: 12px;
+}
+
+/* Expanded content */
+.card-body {
+    padding: 0 16px 16px;
+    border-top: 1px solid #232730;
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stats-grid-mobile {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    padding-top: 16px;
+}
+
+.m-stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.m-stat-item.full-width {
+    grid-column: span 3;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 1px solid #232730;
+    padding-bottom: 4px;
+    margin-bottom: 4px;
+}
+
+.m-stat-item .label {
+    font-size: 11px;
+    color: #8a93a0;
+}
+
+.m-stat-item .value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ebedf2;
+}
+
+.card-heroes {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.heroes-label {
+    font-size: 12px;
+    color: #8a93a0;
+}
+
+.heroes-list {
+    display: flex;
+    gap: 6px;
+}
+
+.card-hero-icon {
+    width: 40px;
+    height: 22px;
+    object-fit: cover;
+    border-radius: 2px;
+    background: #000;
 }
 
 .no-data-cell {
