@@ -229,11 +229,28 @@ class AchievementService {
 
     /**
      * 检测队伍成就：摧毁不朽之守护且获胜
+     * 检查获胜队伍是否摧毁了不朽之守护（拒绝了圣物）
+     * 只要获胜队伍有任意一次摧毁盾，就算达成成就
      */
     checkAegisVictory(matchData) {
-        // 这个需要从比赛数据的 objectives 字段获取
-        // 简化版本：检查获胜队伍是否有人拿过盾
-        return matchData.aegis_destroyed_by_winner === true;
+        if (!matchData.objectives) return false;
+
+        // 查找所有 CHAT_MESSAGE_DENIED_AEGIS 事件（摧毁不朽之守护）
+        const deniedAegisEvents = matchData.objectives.filter(obj =>
+            obj.type === 'CHAT_MESSAGE_DENIED_AEGIS'
+        );
+
+        if (deniedAegisEvents.length === 0) return false;
+
+        // 获胜队伍
+        const winningTeam = matchData.radiant_win ? 'radiant' : 'dire';
+
+        // 检查是否有任意一次摧毁盾的事件是获胜队伍完成的
+        return deniedAegisEvents.some(event => {
+            // player_slot < 128 为天辉（Radiant），>= 128 为夜魇（Dire）
+            const playerTeam = event.player_slot < 128 ? 'radiant' : 'dire';
+            return playerTeam === winningTeam;
+        });
     }
 
     /**
