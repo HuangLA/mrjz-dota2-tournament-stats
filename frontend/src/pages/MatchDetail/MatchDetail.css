@@ -405,6 +405,123 @@
     border-radius: 50%;
 }
 
+.achievement-player-name {
+    color: #8a93a0;
+    font-size: 13px;
+}
+
+/* 隐藏成就特殊样式 */
+.hidden-achievement-section {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 2px solid #1c222b;
+}
+
+.hidden-achievement-title {
+    margin: 0 0 16px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.hidden-achievement-badge {
+    font-size: 14px;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 165, 0, 0.15));
+    color: #FFD700;
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
+}
+
+.hidden-achievement-item {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.05), rgba(255, 165, 0, 0.05));
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.hidden-achievement-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 215, 0, 0.25);
+    border-color: rgba(255, 215, 0, 0.5);
+}
+
+.achievement-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+}
+
+.achievement-icon-wrapper .crown-icon {
+    position: static;
+    transform: none;
+    animation: none;
+}
+
+.achievement-icon-wrapper .crown-icon:hover {
+    transform: scale(1.1);
+}
+
+.hidden-achievement-name {
+    font-size: 16px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+}
+
+.achievement-hover-hint {
+    font-size: 11px;
+    color: #6e7989;
+    font-style: italic;
+    margin-bottom: 8px;
+}
+
+.achievement-description {
+    font-size: 12px;
+    color: #8a93a0;
+    margin-bottom: 8px;
+    font-style: italic;
+}
+
+/* 隐藏成就的描述提示框 */
+.achievement-description-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(40, 20, 0, 0.95));
+    color: #FFD700;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    border: 2px solid #FFD700;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+    z-index: 1000;
+}
+
+.hidden-achievement-item {
+    position: relative;
+}
+
+.hidden-achievement-item:hover .achievement-description-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-12px);
+}
+
 
 /* Mobile Responsiveness for MatchDetail */
 @media (max-width: 768px) {

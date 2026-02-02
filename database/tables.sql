@@ -1,6 +1,6 @@
 -- ============================================
 -- MRJZ 数据库表结构脚本
--- 最后更新: 2026-01-24
+-- 最后更新: 2026-02-02
 -- ============================================
 
 USE `mrjz`;
@@ -104,10 +104,13 @@ CREATE TABLE IF NOT EXISTS `achievements` (
   `achievement_desc` VARCHAR(255) COMMENT '成就描述',
   `team` ENUM('radiant', 'dire') NULL COMMENT '队伍（队伍成就用）',
   `value` JSON COMMENT '成就相关数据',
+  `is_unique` BOOLEAN DEFAULT FALSE COMMENT '是否为唯一成就（每届比赛只有第一个完成的人获得）',
+  `league_id` INT NULL COMMENT '联赛ID（用于唯一成就的范围判定）',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   INDEX `idx_match_id` (`match_id`),
   INDEX `idx_player_id` (`player_id`),
   INDEX `idx_achievement_type` (`achievement_type`),
+  INDEX `idx_unique_achievement` (`achievement_type`, `is_unique`, `league_id`),
   FOREIGN KEY (`match_id`) REFERENCES `matches`(`match_id`) ON DELETE CASCADE,
   FOREIGN KEY (`player_id`) REFERENCES `players`(`player_id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='成就记录表';
@@ -151,4 +154,5 @@ CREATE TABLE IF NOT EXISTS `editions` (
 
 -- 显示创建结果
 SELECT 'All tables created successfully!' AS message;
-SELECT 'Updated: 2026-01-24 - Added parse status fields (parse_requested, is_parsed, parse_requested_at) to matches table' AS update_info;
+SELECT 'Updated: 2026-01-24 - Added parse status fields (parse_requested, is_parsed, parse_requested_at) to matches table' AS update_info_1;
+SELECT 'Updated: 2026-02-02 - Added unique achievement fields (is_unique, league_id) to achievements table' AS update_info_2;
