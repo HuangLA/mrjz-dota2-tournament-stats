@@ -11,7 +11,7 @@ const { Option } = Select;
 
 const PlayerList = () => {
     const [players, setPlayers] = useState([]);
-    const [selectedLeague, setSelectedLeague] = useState(18365); // 默认第二届
+    const [selectedLeague, setSelectedLeague] = useState(19483); // 默认第三届
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [pagination, setPagination] = useState({
@@ -240,6 +240,7 @@ const PlayerList = () => {
                         placeholder="选择联赛"
                     >
                         <Option value={null}>全部联赛</Option>
+                        <Option value={19483}>第三届 (19483)</Option>
                         <Option value={18365}>第二届 (18365)</Option>
                         <Option value={17485}>第一届 (17485)</Option>
                     </Select>

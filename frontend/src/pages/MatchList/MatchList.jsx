@@ -21,7 +21,7 @@ const MatchList = () => {
     const [syncing, setSyncing] = useState(false);
     const [syncVisible, setSyncVisible] = useState(false); // 同步进度显示状态
     const [matches, setMatches] = useState([]);
-    const [selectedLeague, setSelectedLeague] = useState(18365); // 默认第二届
+    const [selectedLeague, setSelectedLeague] = useState(19483); // 默认第三届
     const [pagination, setPagination] = useState({
         current: 1,
         pageSize: 20,
@@ -219,6 +219,7 @@ const MatchList = () => {
                         style={{ width: isMobile ? '100%' : 180 }}
                     >
                         <Option value={null}>全部联赛</Option>
+                        <Option value={19483}>第三届 (19483)</Option>
                         <Option value={18365}>第二届 (18365)</Option>
                         <Option value={17485}>第一届 (17485)</Option>
                     </Select>
