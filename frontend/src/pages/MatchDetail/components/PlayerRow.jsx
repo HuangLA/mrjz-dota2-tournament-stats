@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getHeroIconUrl } from '../../../utils/heroUtils';
 import { getItemImageUrl } from '../../../utils/itemUtils';
+import CrownIcon from '../../../components/CrownIcon';
 
 const PlayerRow = ({ player, team, matchId }) => {
     const navigate = useNavigate();
@@ -73,11 +74,14 @@ const PlayerRow = ({ player, team, matchId }) => {
                         style={{ cursor: 'pointer' }}
                     >
                         {player.Player?.avatar_url && (
-                            <img
-                                src={player.Player.avatar_url}
-                                alt={player.Player.nickname}
-                                className="player-avatar"
-                            />
+                            <div className="player-avatar-wrapper">
+                                <img
+                                    src={player.Player.avatar_url}
+                                    alt={player.Player.nickname}
+                                    className="player-avatar"
+                                />
+                                {player.has_lebron_achievement && <CrownIcon size={28} />}
+                            </div>
                         )}
                         <span className="player-name">
                             {player.Player?.nickname ? (

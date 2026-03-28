@@ -1,0 +1,74 @@
+.crown-icon {
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    cursor: help;
+    animation: crown-glow 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8));
+}
+
+.crown-icon svg {
+    display: block;
+}
+
+/* 发光动画 */
+@keyframes crown-glow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 12px rgba(255, 215, 0, 1));
+    }
+}
+
+/* Hover 效果 */
+.crown-icon:hover {
+    transform: translateX(-50%) scale(1.2);
+    transition: transform 0.3s ease;
+    filter: drop-shadow(0 0 16px rgba(255, 215, 0, 1));
+}
+
+/* 在头像容器中的定位 */
+.player-avatar-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.player-avatar-wrapper .crown-icon {
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Tooltip 样式 */
+.crown-icon::after {
+    content: '该玩家完成了尊贵的隐藏成就"乐邦詹士"';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(40, 20, 0, 0.95));
+    color: #FFD700;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    border: 2px solid #FFD700;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+    z-index: 1000;
+}
+
+.crown-icon:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-12px);
+}

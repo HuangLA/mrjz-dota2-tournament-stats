@@ -106,8 +106,12 @@ class SyncService {
                 return { synced: 0, total: allMatches.length };
             }
 
+            // 4. 按比赛ID排序（match_id越小越早，确保按时间正序同步）
+            // 这对于唯一成就的判定非常重要，确保最早完成的玩家获得成就
+            newMatches.sort((a, b) => a.match_id - b.match_id);
+            console.log(`📅 Sorted matches by match_id (oldest first) for correct unique achievement detection`);
 
-            // 4. 顺序获取新比赛详情（避免触发 API 限流）
+            // 5. 顺序获取新比赛详情（避免触发 API 限流）
             console.log('⏳ Syncing matches sequentially to avoid rate limiting...\n');
 
             for (let i = 0; i < newMatches.length; i++) {
@@ -281,10 +285,10 @@ class SyncService {
                         assists: p.assists || 0,
                         multi_kills: p.multi_kills || {},
                         kill_streaks: p.kill_streaks || {},
-                        firstblood_claimed: p.firstblood_claimed || 0
+                        kills_log: p.kills_log || [] // 传递 kills_log 用于隐藏成就检测
                     }))
                 };
-                await achievementService.detectAndSaveAchievements(processedMatchData);
+                await achievementService.detectAndSaveAchievements(processedMatchData, leagueId);
                 console.log(`🏆 Achievement detection completed for match ${matchId}`);
             } else {
                 console.log(`⚠️ Skipping achievement detection for unparsed match ${matchId}`);

@@ -11,7 +11,7 @@ const Teams = () => {
     const [teams, setTeams] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshCount, setRefreshCount] = useState(0);
-    const [selectedLeague, setSelectedLeague] = useState(18365); // 默认第二届
+    const [selectedLeague, setSelectedLeague] = useState(19483); // 默认第三届
 
     useEffect(() => {
         loadTeams();
@@ -89,6 +89,7 @@ const Teams = () => {
                         style={{ width: 180 }}
                     >
                         <Option value={null}>全部联赛</Option>
+                        <Option value={19483}>第三届 (19483)</Option>
                         <Option value={18365}>第二届 (18365)</Option>
                         <Option value={17485}>第一届 (17485)</Option>
                     </Select>

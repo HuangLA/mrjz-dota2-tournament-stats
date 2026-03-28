@@ -93,9 +93,31 @@ class MatchController {
                 });
             }
 
+            // 查询乐邦詹士成就（唯一成就）
+            const lebronAchievements = await Achievement.findAll({
+                where: {
+                    match_id: id,
+                    achievement_type: 'lebron_james',
+                    is_unique: true
+                },
+                attributes: ['player_id']
+            });
+
+            // 创建玩家ID到成就的映射
+            const lebronPlayerIds = new Set(lebronAchievements.map(a => a.player_id));
+
+            // 为每个玩家添加 has_lebron_achievement 字段
+            const matchData = match.toJSON();
+            if (matchData.players) {
+                matchData.players = matchData.players.map(player => ({
+                    ...player,
+                    has_lebron_achievement: lebronPlayerIds.has(player.player_id)
+                }));
+            }
+
             res.json({
                 success: true,
-                data: match
+                data: matchData
             });
         } catch (error) {
             next(error);

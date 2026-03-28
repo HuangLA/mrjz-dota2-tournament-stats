@@ -1,12 +1,13 @@
-const { Achievement } = require('../models');
+const { Achievement, Match } = require('../models');
 
 class AchievementService {
     /**
      * 检测并保存比赛的所有成就
      * @param {Object} matchData - 比赛数据
+     * @param {number} leagueId - 联赛ID（用于唯一成就判定）
      * @returns {Promise<Array>} 保存的成就列表
      */
-    async detectAndSaveAchievements(matchData) {
+    async detectAndSaveAchievements(matchData, leagueId = null) {
         const achievements = [];
 
         // 0. 清除该比赛已有的成就（避免重复更新导致重复数据）
@@ -124,7 +125,28 @@ class AchievementService {
             ));
         }
 
-        // 3. 批量保存成就
+        // 3. 检测隐藏成就（需要 leagueId）
+        if (leagueId) {
+            // 乐邦詹士（失败比赛最后7秒完成2次击杀）
+            const lebronCandidates = await this.checkLeBronJames(matchData, leagueId);
+            for (const candidate of lebronCandidates) {
+                achievements.push(this.createUniqueAchievement(
+                    matchData.match_id,
+                    candidate.player_id,
+                    'lebron_james',
+                    '乐邦詹士',
+                    '在失败的比赛中，最后7秒完成2次击杀',
+                    leagueId,
+                    {
+                        kills_count: candidate.kills_count,
+                        kills_detail: candidate.kills_detail
+                    }
+                ));
+                console.log(`🏀 "乐邦詹士"成就已授予玩家 ${candidate.player_id}`);
+            }
+        }
+
+        // 4. 批量保存成就
         if (achievements.length > 0) {
             await Achievement.bulkCreate(achievements);
             console.log(`✅ Saved ${achievements.length} achievements for match ${matchData.match_id}`);
@@ -145,6 +167,23 @@ class AchievementService {
             achievement_desc: desc,
             team: team,
             value: value
+        };
+    }
+
+    /**
+     * 创建唯一成就对象（每届比赛只有第一个完成的人获得）
+     */
+    createUniqueAchievement(matchId, playerId, type, name, desc, leagueId, value) {
+        return {
+            match_id: matchId,
+            player_id: playerId,
+            achievement_type: type,
+            achievement_name: name,
+            achievement_desc: desc,
+            team: null,
+            value: value,
+            is_unique: true,
+            league_id: leagueId
         };
     }
 
@@ -260,6 +299,102 @@ class AchievementService {
         return matchData.players
             .filter(p => p.team === team)
             .reduce((sum, p) => sum + p.kills, 0);
+    }
+
+    /**
+     * 检测隐藏成就：乐邦詹士
+     * 条件：在失败的比赛中，最后7秒完成2次击杀
+     * 特殊性：每届比赛只有第一个完成的人才能获得
+     * @param {Object} matchData - 比赛数据
+     * @param {number} leagueId - 联赛ID
+     * @returns {Promise<Array>} 符合条件的玩家列表
+     */
+    async checkLeBronJames(matchData, leagueId) {
+        // 1. 检查是否有 kills_log 数据
+        const hasKillsLog = matchData.players.some(p => p.kills_log && p.kills_log.length > 0);
+        if (!hasKillsLog) {
+            return []; // 无法检测，返回空数组
+        }
+
+        // 2. 检查该联赛是否已有人获得此成就
+        const existingAchievement = await Achievement.findOne({
+            where: {
+                achievement_type: 'lebron_james',
+                is_unique: true,
+                league_id: leagueId
+            },
+            include: [{
+                model: Match,
+                attributes: ['match_id', 'start_time']
+            }],
+            order: [['created_at', 'ASC']] // 按创建时间排序，获取第一个创建的
+        });
+
+        if (existingAchievement) {
+            // 比较比赛时间，而不是创建时间
+            const existingMatchId = existingAchievement.match_id;
+            const currentMatchId = matchData.match_id;
+
+            // match_id 越小，比赛越早（Dota 2 的 match_id 是递增的）
+            if (currentMatchId >= existingMatchId) {
+                // 当前比赛更晚或相同，不授予成就
+                console.log(`⚠️  "乐邦詹士"成就已被玩家 ${existingAchievement.player_id} 在比赛 ${existingMatchId} 中获得`);
+                console.log(`   当前比赛 ${currentMatchId} 更晚，不授予成就`);
+                return [];
+            } else {
+                // 当前比赛更早！这说明同步顺序有问题，需要修正
+                console.log(`🔄 发现更早的成就完成者！`);
+                console.log(`   旧成就: 比赛 ${existingMatchId}, 玩家 ${existingAchievement.player_id}`);
+                console.log(`   新成就: 比赛 ${currentMatchId} (更早)`);
+                console.log(`   删除旧成就，准备授予新成就...`);
+
+                // 删除旧成就
+                await Achievement.destroy({
+                    where: { id: existingAchievement.id }
+                });
+
+                console.log(`   ✅ 已删除旧成就，继续检测当前比赛...`);
+                // 继续检测当前比赛
+            }
+        }
+
+        // 3. 计算最后7秒的时间阈值
+        const lastSevenSeconds = matchData.duration - 7;
+        const candidates = [];
+
+        // 4. 遍历所有玩家
+        for (const player of matchData.players) {
+            // 检查是否失败
+            const won = (matchData.radiant_win && player.player_slot < 128) ||
+                (!matchData.radiant_win && player.player_slot >= 128);
+
+            if (won) continue; // 只检测失败的玩家
+
+            // 检查最后7秒的击杀数
+            if (player.kills_log && player.kills_log.length > 0) {
+                const killsInLastSeven = player.kills_log.filter(
+                    k => k.time >= lastSevenSeconds
+                );
+
+                if (killsInLastSeven.length >= 2) {
+                    candidates.push({
+                        player_id: player.account_id,
+                        player_slot: player.player_slot,
+                        kills_count: killsInLastSeven.length,
+                        kills_detail: killsInLastSeven
+                    });
+                }
+            }
+        }
+
+        // 5. 如果有多个候选人，选择第一个（按 player_slot 排序）
+        if (candidates.length > 0) {
+            candidates.sort((a, b) => a.player_slot - b.player_slot);
+            console.log(`🏀 发现 ${candidates.length} 位玩家达成"乐邦詹士"条件，选择第一位: Slot ${candidates[0].player_slot}`);
+            return [candidates[0]]; // 只返回第一个
+        }
+
+        return [];
     }
 }
 

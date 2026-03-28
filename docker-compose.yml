@@ -14,7 +14,7 @@ services:
       # 在这里填入你的 API Key
       - STEAM_API_KEY=E613C759C880A8B3241123D25AF1B0C3
       - STRATZ_API_TOKEN=
-      - LEAGUE_ID=18365
+      - LEAGUE_ID=19483
     volumes:
       # 数据持久化：只需映射这一个目录
       - mrjz-data:/var/lib/mysql

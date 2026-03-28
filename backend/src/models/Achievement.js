@@ -40,6 +40,16 @@ const Achievement = sequelize.define('Achievement', {
     value: {
         type: DataTypes.JSON,
         comment: '成就相关数据'
+    },
+    is_unique: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        comment: '是否为唯一成就（每届比赛只有第一个完成的人获得）'
+    },
+    league_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        comment: '联赛ID（用于唯一成就的范围判定）'
     }
 }, {
     tableName: 'achievements',
